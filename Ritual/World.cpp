@@ -1,6 +1,7 @@
 #include "Ritual.h"
 #include "World.h"
 #include "Scrub.h"
+#include <algorithm>
 
 static const int tileWidth = 64;
 static const int tileHeight = 32;
@@ -85,6 +86,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	free(img);
 
 	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
+	mShadow = ImgToTex(renderer, "assets/shadow.png", mShadowW, mShadowH);
 
 	mDest = { 32, 32 };
 }
@@ -188,6 +190,13 @@ void World::Draw(SDL_Renderer *renderer)
 	doodadToRender.insert(doodadToRender.end(), unitsToRender.begin(), unitsToRender.end());
 	doodadToRender.insert(doodadToRender.end(), objectsToRender.begin(), objectsToRender.end());
 	
+	struct sorter_ {
+		bool operator() (drawable &i, drawable &j) {
+			return (i.y<j.y);
+		}
+	} sorter;
+	sort(doodadToRender.begin(), doodadToRender.end(), sorter);
+
 	for (drawable& d : doodadToRender)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
@@ -196,10 +205,14 @@ void World::Draw(SDL_Renderer *renderer)
 
 		TileType *tt = mObjectTypes[d.sprite];
 
+		dstrect.w = mShadowW;
+		dstrect.h = mShadowH;
+		SDL_RenderCopy(renderer, mShadow, &srcrect, &dstrect);
+
 		dstrect.w = tt->mW;
 		dstrect.h = tt->mH;
-
 		SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
+
 	}
 	
 

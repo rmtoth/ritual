@@ -6,8 +6,12 @@ struct World {
 
 	float mCamX, mCamY;
 	int mMouseX, mMouseY;
+	
 	SDL_Texture *mMarker;
 	int mMarkerW, mMarkerH;
+	
+	SDL_Texture *mShadow;
+	int mShadowW, mShadowH;
 
 	struct TileType {
 		SDL_Texture *mTex;
