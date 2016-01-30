@@ -13,9 +13,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	mCamX = 0.0f;
 	mCamY = 0.0f;
 
-	AddTile(renderer, 0, "assets/tile_gravel.png");
+	AddTile(renderer, 0, "assets/tile_gravel2.png");
 	AddTile(renderer, 1, "assets/tile_grass.png");
-	AddTile(renderer, 2, "assets/tile_grass_flat.png");
+	AddTile(renderer, 2, "assets/tile_grass_flat2.png");
 	AddTile(renderer, 3, "assets/tile_concrete.png");
 	AddTile(renderer, 4, "assets/tile_grass.png");
 	AddTile(renderer, 32, "assets/tile_spawn.png");
