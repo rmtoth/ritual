@@ -96,6 +96,12 @@ void SimulateUntil(float tend)
 	// Create new units, will also compute their full path
 	SpawnTimeInterval(g_simulation_time, tend);
 
+	if (g_towers.empty())
+	{
+		g_simulation_time = tend;
+		return;
+	}
+
 	// Create priority queue sorted by next shot time
 	struct node {
 		float t;
@@ -121,14 +127,13 @@ void SimulateUntil(float tend)
 		auto &tt = tower_types[n.tower->type];
 		int target = -1;
 		float d2 = FindClosest(n.t, n.tower->x, n.tower->y, &target);
-		if ((target == -1) || (d2 > tt.range2))
+		if ((target != -1) || (d2 <= tt.range2))
 		{
-			n.t += tower_types[n.tower->type].period;
-			Q.push(n);
-			continue;
+			n.tower->shots.push_back({ n.t, target });
+			Damage(n.t, target, tt.damage);
 		}
-		n.tower->shots.push_back({ n.t, target });
-		Damage(n.t, target, tt.damage);
+		n.t += tower_types[n.tower->type].period;
+		Q.push(n);
 	}
 }
 
