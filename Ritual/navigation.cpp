@@ -52,7 +52,7 @@ void SimDebugDraw(SDL_Renderer *r)
 		float sx0, sy0, sx1, sy1;
 		g_world->WorldToScreen(sx0, sy0, x0, y0);
 		g_world->WorldToScreen(sx1, sy1, x1, y1);
-		SDL_RenderDrawLine(r, sx0, sy0, sx1, sy1);
+		SDL_RenderDrawLine(r, (int)sx0, (int)sy0, (int)sx1, (int)sy1);
 	}
 }
 
@@ -122,7 +122,13 @@ bool ComputePotentialField(float t, potential_field &pf)
 			return false;
 	}
 
-	// TODO: Validate if spawn points are not trapped
+	// Validate that spawn points are not trapped
+	for (auto &p : g_world->mSpawn)
+	{
+		int cell = p.x + p.y * pf.w;
+		if (next[cell] == -1)
+			return false;
+	}
 
 	return true;
 }

@@ -67,6 +67,14 @@ void TruncateShots(tower &u, float t)
 	u.shots.resize(rm - u.shots.begin());
 }
 
+float GetHealth(unit &u, float t)
+{
+	auto hi = lower_bound(u.hp.begin(), u.hp.end(), t, health_finder);
+	if (hi == u.hp.begin())
+		return u.hp.front().hp;
+	return (hi - 1)->hp;
+}
+
 void UnsimulateFrom(float t)
 {
 	for (auto &u : g_units)
@@ -86,10 +94,37 @@ void Damage(float t, int ui, float amount)
 		u.alive.t1 = t;
 }
 
+void Interpolate(position_transition &pt, float &x, float &y)
+{
+	x = pt.x0 + (pt.x1 - pt.x0) * pt.lerp;
+	y = pt.y0 + (pt.y1 - pt.y0) * pt.lerp;
+}
+
 // TODO: implement this
 float FindClosest(float t, int x, int y, int *ui)
 {
-	return inf;
+	float d2best = inf;
+	int ubest = -1;
+	float x0 = float(x);
+	float y0 = float(y);
+	for (auto &u : g_units)
+	{
+		if (!u.alive(t))
+			continue;
+		float ux, uy;
+		auto pt = GetPositionTransition(u, t);
+		Interpolate(pt, ux, uy);
+		float dx = ux - x0;
+		float dy = uy - y0;
+		float d2 = dx * dx + dy * dy;
+		if (d2best > d2)
+		{
+			d2best = d2;
+			ubest = int(&u - &g_units[0]);
+		}
+	}
+	*ui = ubest;
+	return d2best;
 }
 
 // TODO: End condition
@@ -129,7 +164,7 @@ void SimulateUntil(float tend)
 		auto &tt = tower_types[n.tower->type];
 		int target = -1;
 		float d2 = FindClosest(n.t, n.tower->x, n.tower->y, &target);
-		if ((target != -1) || (d2 <= tt.range2))
+		if ((target != -1) && (d2 <= tt.range2))
 		{
 			n.tower->shots.push_back({ n.t, target });
 			Damage(n.t, target, tt.damage);
@@ -193,9 +228,10 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			position_transition pt = GetPositionTransition(u, t);
 			drawable d;
 			d.sprite = 80 + u.type;
-			d.x = pt.x0 + (pt.x1 - pt.x0) * pt.lerp;
-			d.y = pt.y0 + (pt.y1 - pt.y0) * pt.lerp;
+			Interpolate(pt, d.x, d.y);
 			stuff.push_back(d);
+			float hp = GetHealth(u, t);
+			printf("Health: %f\n", hp);
 		}
 	}
 	for (auto &u : g_towers)
