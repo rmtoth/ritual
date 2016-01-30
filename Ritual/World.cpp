@@ -172,8 +172,8 @@ void World::Draw(SDL_Renderer *renderer)
 			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
 
 			WorldToScreen(fx, fy, float(x), float(y));
-			dstrect.x = int(fx) + camX;
-			dstrect.y = int(fy) + camY;
+			dstrect.x = int(fx);
+			dstrect.y = int(fy);
 			dstrect.w = tt->mW;
 			dstrect.h = tt->mH;
 
@@ -204,8 +204,8 @@ void World::Draw(SDL_Renderer *renderer)
 	for (drawable& d : doodadToRender)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
-		dstrect.x = int(fx) + camX;
-		dstrect.y = int(fy) + camY;
+		dstrect.x = int(fx);
+		dstrect.y = int(fy);
 
 
 		TileType *tt = mObjectTypes[d.sprite][d.variation];
@@ -241,8 +241,8 @@ void World::DrawMarker(SDL_Renderer *renderer)
 	float sx, sy;
 	WorldToScreen(sx, sy, floor(wx), floor(wy));
 
-	dstrect.x = int(mCamX + sx + 0.5f);
-	dstrect.y = int(mCamY + sy + 0.5f);
+	dstrect.x = int(sx + 0.5f);
+	dstrect.y = int(sy + 0.5f);
 	dstrect.w = mMarkerW;
 	dstrect.h = mMarkerH;
 
@@ -314,8 +314,8 @@ void World::WorldToScreen(float &sx, float &sy, float wx, float wy)
 {
 	float tw = float(tileWidth >> 1);
 	float th = float(tileHeight >> 1);
-	sx = wx * tw - wy * tw - tw;
-	sy = wx * th + wy * th - th;
+	sx = wx * tw - wy * tw - tw + mCamX;
+	sy = wx * th + wy * th - th + mCamY;
 	//sx = wx * tw - wy * tw + tw;
 	//sy = wx * th + wy * th + th;
 }
