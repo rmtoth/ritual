@@ -8,10 +8,20 @@ static bool position_finder(const position &p, float t)
 	return p.t <= t;
 }
 
+position_transition GetEndPosition(unit &u)
+{
+	position &p = u.path.back();
+	return{ p.x, p.y, p.x, p.y, 0 };
+}
+
 position_transition GetPositionTransition(unit &u, float t)
 {
 	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
+	if (lo == u.path.end())
+		return GetEndPosition(u);
 	auto hi = lo + 1;
+	if (hi == u.path.end())
+		return GetEndPosition(u);
 	position_transition pt = { lo->x, lo->y, hi->x, hi->y };
 	pt.lerp = (t - lo->t) / (hi->t - lo->t);
 	return pt;

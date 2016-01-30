@@ -25,7 +25,8 @@ static bool shot_finder(const shot &s, float t)
 // TODO: Unit types with corresponding health and speed
 void CreateUnit(position p)
 {
-	unit u = {};
+	g_units.push_back({});
+	unit &u = g_units.back();
 	u.alive = span(p.t);
 	u.hp.push_back({ p.t, 100 });
 	u.path.push_back(p);
@@ -36,11 +37,12 @@ void CreateUnit(position p)
 void SpawnTimeInterval(float t0, float t1)
 {
 	// Temp: create one unit per 10 seconds.
-	for (float t = ceil(t0); t < t1; t += 10.0f)
-	{
-		position p = { t, 20, 20 };
-		CreateUnit(p);
-	}
+	//for (float tt = ceil(t0/10+.5); tt < t1/10; tt += 1)
+	//{
+	//	float t = tt * 10 + 5;
+	//	position p = { t, 20, 20 };
+	//	CreateUnit(p);
+	//}
 }
 
 // TODO: Do we need anything here?
@@ -153,16 +155,22 @@ bool BuildTower(float t, int x, int y, int type)
 		if ((pt.x0 == x) && (pt.y0 == y)) return false;
 		if ((pt.x1 == x) && (pt.y1 == y)) return false;
 	}
-	// Try to compute an updated potential field. Will complain if we do something bad
-	if (!CreatePotentialField(t))
-		return false;
 
+	// We must create tower before CreatePotentialField for it to be blocking
 	tower tw;
 	tw.alive = span(t);
 	tw.x = x;
 	tw.y = y;
 	tw.type = type;
 	g_towers.push_back(tw);
+
+	// Try to compute an updated potential field. Will complain if we do something bad
+	if (!CreatePotentialField(t))
+	{
+		g_towers.pop_back();
+		return false;
+	}
+
 	// For each unit, clear path from t and recompute it
 	for (auto &u : g_units)
 		RecomputePath(u, t);
