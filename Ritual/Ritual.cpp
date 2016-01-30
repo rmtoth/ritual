@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 
 	bool quit = false;
 
-	g_world = new World(renderer, "assets/map.png");
+	g_world = new World(renderer, "assets/map");
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();

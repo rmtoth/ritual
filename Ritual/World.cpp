@@ -5,8 +5,6 @@ static const int tileHeight = 32;
 
 World::World(SDL_Renderer *renderer, string filename)
 {
-	char buf[1024];
-
 	mCamX = 0.0f;
 	mCamY = 0.0f;
 
@@ -24,9 +22,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
-	sprintf_s(buf, "%s.png", filename.c_str());
+	string fn = filename + ".png";
 
-	lodepng_decode32_file(&img, &mWidth, &mHeight, buf);
+	lodepng_decode32_file(&img, &mWidth, &mHeight, fn.c_str());
 	mTiles = new int[mWidth * mHeight];
 
 	for (u32 i = 0; i < mWidth * mHeight; i++) {
@@ -40,8 +38,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
-	sprintf_s(buf, "%s_weights.png", filename.c_str());
-	lodepng_decode32_file(&img, &w, &h, buf);
+	fn = filename + "_weights.png";
+	lodepng_decode32_file(&img, &w, &h, fn.c_str());
 	mWalkCost = new float[mWidth * mHeight];
 	for (u32 i = 0; i < mWidth * mHeight; i++) {
 		u32 col = *((u32 *)&img[i * 4]) & 0x000000FF;
