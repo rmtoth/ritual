@@ -25,6 +25,7 @@ struct World {
 	void AddTile(SDL_Renderer *renderer, int i, string filename);
 
 	void Draw(SDL_Renderer *renderer);
+	void DrawMarker(SDL_Renderer *renderer);
 
 	bool Event(SDL_Event &event);
 	bool MouseDown(SDL_Event &event);
