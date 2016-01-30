@@ -56,26 +56,13 @@ World::~World()
 
 void World::AddTile(SDL_Renderer *renderer, int i, string filename)
 {
-	const u32 rmask = 0x000000ff;
-	const u32 gmask = 0x0000ff00;
-	const u32 bmask = 0x00ff0000;
-	const u32 amask = 0xff000000;
-
-	u8 *img;
-	u32 w, h;
-	lodepng_decode32_file(&img, &w, &h, filename.c_str());
-
-	SDL_Surface *image = SDL_CreateRGBSurface(0, w, h, 32, rmask, gmask, bmask, amask);
-	SDL_LockSurface(image);
-	memcpy(image->pixels, img, 4 * w * h);
-	SDL_UnlockSurface(image);
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, image);
-	free(img);
+	int w, h;
+	SDL_Texture *tex = ImgToTex(renderer, filename, w, h);
 
 	TileType *tt = new TileType();
 	tt->mTex = tex;
-	tt->mW = int(w);
-	tt->mH = int(h);
+	tt->mW = w;
+	tt->mH = h;
 
 	mTileTypes[i] = tt;
 
@@ -121,6 +108,12 @@ void World::Draw(SDL_Renderer *renderer)
 		}
 	}
 }
+
+void World::DrawMarker(SDL_Renderer *renderer)
+{
+
+}
+
 
 bool World::Event(SDL_Event &event)
 {

@@ -13,8 +13,8 @@
 
 using namespace std;
 
-#define RES_X		1024
-#define RES_Y		768
+#define RES_X		1600
+#define RES_Y		900
 static const float inf = numeric_limits<float>::infinity();
 
 typedef float					f32;
@@ -95,3 +95,6 @@ void TestSim();
 extern vector<tower> g_towers;
 extern vector<unit> g_units;
 extern struct World *g_world;
+extern struct Scrub *g_scrub;
+
+SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h);
