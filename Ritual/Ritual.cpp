@@ -2,12 +2,8 @@
 //
 
 #include "stdafx.h"
-
-#include "Misc.h"
-#include "include\SDL.h"
-#include "include\SDL_main.h"
-#include "include\SDL_surface.h"
-#include "lodepng.h"
+#include "Ritual.h"
+//#include "include\SDL_main.h"
 
 #define RES_X		640
 #define RES_Y		480
