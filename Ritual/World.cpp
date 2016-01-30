@@ -172,8 +172,8 @@ void World::Draw(SDL_Renderer *renderer)
 			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
 
 			WorldToScreen(fx, fy, float(x), float(y));
-			dstrect.x = int(fx);
-			dstrect.y = int(fy);
+			dstrect.x = int(fx) - (tileWidth >> 1);
+			dstrect.y = int(fy) - (tileHeight >> 1);
 			dstrect.w = tt->mW;
 			dstrect.h = tt->mH;
 
