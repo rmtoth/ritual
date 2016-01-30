@@ -39,3 +39,13 @@ struct tower {
 	int x, y;
 	vector<interaction*> shots;
 };
+
+struct drawable {
+	int sprite;
+	float x, y;
+};
+
+void GetDrawables(float t, vector<drawable>&);
+
+extern vector<tower> g_towers;
+extern vector<unit> g_units;
