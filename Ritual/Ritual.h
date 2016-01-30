@@ -13,10 +13,9 @@
 
 using namespace std;
 
+#define RES_X		1024
+#define RES_Y		768
 static const float inf = numeric_limits<float>::infinity();
-
-#define RES_X		640
-#define RES_Y		480
 
 typedef float					f32;
 typedef	double					f64;

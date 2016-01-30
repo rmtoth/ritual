@@ -3,6 +3,9 @@
 
 struct World {
 
+	float mCamX, mCamY;
+
+
 	struct TileType {
 		SDL_Texture *mTex;
 		int mW, mH;
@@ -24,6 +27,13 @@ struct World {
 	void AddTile(SDL_Renderer *renderer, int i, string filename);
 
 	void Draw(SDL_Renderer *renderer);
+
+	bool Event(SDL_Event &event);
+	bool MouseDown(SDL_Event &event);
+	bool MouseMove(SDL_Event &event);
+	bool MouseUp(SDL_Event &event);
+
+
 };
 
 

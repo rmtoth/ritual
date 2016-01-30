@@ -32,15 +32,20 @@ int main(int argc, char* argv[])
 		nowTime = double(perfCnt) / double(perfFreq);
 		double ddeltatime = nowTime - lastTime;
 
+		//printf("%f\n", ddeltatime);
+
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				quit = 1;
 				break;
 			}
+			if (g_world->Event(event)) continue;
 		}
 		if (quit)
 			break;
+
+		SDL_RenderClear(renderer);
 
 		g_world->Draw(renderer);
 
