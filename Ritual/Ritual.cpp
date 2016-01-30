@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 				quit = 1;
 				break;
 			}
+			if (world->Event(event)) continue;
 		}
 		if (quit)
 			break;

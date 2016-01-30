@@ -9,8 +9,8 @@
 
 using namespace std;
 
-#define RES_X		640
-#define RES_Y		480
+#define RES_X		1024
+#define RES_Y		768
 
 typedef float					f32;
 typedef	double					f64;
