@@ -21,6 +21,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
+	AddObject(renderer, 5, "assets/tile_tree2.png");
+	AddObject(renderer, 5, "assets/tile_tree3.png");
+	AddObject(renderer, 5, "assets/tile_tree4.png");
 	AddObject(renderer, 32, "assets/tile_spawn.png");
 	AddObject(renderer, 50, "assets/tower1.png");
 	AddObject(renderer, 80, "assets/tower1.png");
@@ -69,6 +72,7 @@ World::World(SDL_Renderer *renderer, string filename)
 			d.sprite = c->second;
 			d.x = float(i % mWidth);
 			d.y = float(i / mWidth);
+			d.variation = rand() % mObjectTypes[d.sprite].size();
 			objectsToRender.push_back(d);
 		}
 		
@@ -135,7 +139,7 @@ void World::AddObject(SDL_Renderer *renderer, int i, string filename)
 	tt->mW = w;
 	tt->mH = h;
 
-	mObjectTypes[i] = tt;
+	mObjectTypes[i].push_back(tt);
 
 	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 }
@@ -203,7 +207,8 @@ void World::Draw(SDL_Renderer *renderer)
 		dstrect.x = int(fx) + camX;
 		dstrect.y = int(fy) + camY;
 
-		TileType *tt = mObjectTypes[d.sprite];
+
+		TileType *tt = mObjectTypes[d.sprite][d.variation];
 
 		dstrect.w = mShadowW;
 		dstrect.h = mShadowH;
