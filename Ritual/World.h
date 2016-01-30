@@ -14,6 +14,9 @@ struct World {
 	int *mTiles;
 	float *mWalkCost;
 
+	i2 mDest;
+	vector<i2> mSpawn;
+
 	SDL_Texture *mTextures;
 
 	unsigned int mWidth, mHeight;

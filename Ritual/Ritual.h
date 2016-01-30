@@ -30,6 +30,14 @@ typedef unsigned	__int64		u64;
 typedef signed		long long	i64;
 typedef unsigned	long long	u64;
 
+struct i2 {
+	int x, y;
+};
+
+struct f2 {
+	float x, y;
+};
+
 struct unit;
 struct tower;
 
@@ -90,7 +98,7 @@ struct drawable {
 
 void GetDrawables(float t, vector<drawable>&);
 bool BuildTower(float t, int x, int y, int type);
-void TestSim();
+void InitSim();
 
 extern vector<tower> g_towers;
 extern vector<unit> g_units;

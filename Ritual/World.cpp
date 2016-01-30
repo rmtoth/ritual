@@ -47,6 +47,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
+	mDest = { 32, 32 };
+	mSpawn.push_back({ 10, 10 });
+	mSpawn.push_back({ 20, 15 });
 }
 
 World::~World()

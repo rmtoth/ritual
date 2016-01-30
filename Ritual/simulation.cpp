@@ -58,7 +58,7 @@ bool ComputePotentialField(float t, potential_field &pf)
 		}
 	};
 	priority_queue<node> Q;
-	int initial_cell = 500; // TODO
+	int initial_cell = g_world->mDest.x + g_world->mDest.y * pf.w;
 	Q.push({ 0, initial_cell, -1 });
 	unordered_set<int> visited;
 	while (!Q.empty())
@@ -159,7 +159,17 @@ void SpawnTimeInterval(float t0, float t1)
 	}
 }
 
-void TestSim()
+void InitSim()
 {
+	g_potential_fields.resize(1);
+	auto &pf = *g_potential_fields.begin();
+	pf.alive = span();
+	ComputePotentialField(0, pf);
+
 	CreateUnit({ 1, 10, 10 });
+}
+
+void GetDrawables(float t, vector<drawable> &stuff)
+{
+	
 }
