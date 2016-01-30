@@ -187,7 +187,7 @@ void World::Draw(SDL_Renderer *renderer)
 
 
 	unitsToRender.clear();
-	GetDrawables(g_scrub->mTime * 60.0f, unitsToRender);
+	GetDrawables(g_scrub->mTime, unitsToRender);
 
 	doodadToRender.clear();
 
