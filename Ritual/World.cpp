@@ -47,6 +47,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
+	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
 }
 
 World::~World()
@@ -69,8 +70,6 @@ void World::AddTile(SDL_Renderer *renderer, int i, string filename)
 	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 }
 
-
-
 void World::Draw(SDL_Renderer *renderer)
 {
 
@@ -82,22 +81,23 @@ void World::Draw(SDL_Renderer *renderer)
 	srcrect.w = RES_X;
 	srcrect.h = RES_Y;
 
-	//for (int y = mHeight - 1; y >= 0; y--) {
-	//for (int y = 3; y >= 0; y--) {
-
 	int camX = int(mCamX + 0.5f);
 	int camY = int(mCamY + 0.5f);
 
+	float fx, fy;
 	for (u32 y = 0; y < mHeight; y++) {
-
 		for (u32 x = 0; x < mWidth; x++) {
 
 			int i = y * mWidth + x;
 			int t = mTiles[i];
 			TileType *tt = mTileTypes.find(t)->second;
 
-			dstrect.x = camX + x * (tileWidth >> 1) - y * (tileWidth >> 1) + (tileWidth >> 1);
-			dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
+			//dstrect.x = camX + x * (tileWidth >> 1) - y * (tileWidth >> 1) + (tileWidth >> 1);
+			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
+
+			WorldToScreen(fx, fy, float(x), float(y));
+			dstrect.x = int(fx) + camX;
+			dstrect.y = int(fy) + camY;
 			dstrect.w = tt->mW;
 			dstrect.h = tt->mH;
 
@@ -111,7 +111,27 @@ void World::Draw(SDL_Renderer *renderer)
 
 void World::DrawMarker(SDL_Renderer *renderer)
 {
+	float wx, wy;
+	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
 
+	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
+		return;
+
+	SDL_Rect srcrect, dstrect;
+	srcrect.x = 0;
+	srcrect.y = 0;
+	srcrect.w = RES_X;
+	srcrect.h = RES_Y;
+
+	float sx, sy;
+	WorldToScreen(sx, sy, int(wx), int(wy));
+
+	dstrect.x = int(mCamX + sx + 0.5f);
+	dstrect.y = int(mCamY + sy + 0.5f);
+	dstrect.w = mMarkerW;
+	dstrect.h = mMarkerH;
+
+	SDL_RenderCopy(renderer, mMarker, &srcrect, &dstrect);
 }
 
 
@@ -138,6 +158,9 @@ bool World::MouseMove(SDL_Event &event)
 		mCamX += event.motion.xrel;
 		mCamY += event.motion.yrel;
 	}
+	mMouseX = event.motion.x;
+	mMouseY = event.motion.y;
+
 	return true;
 }
 
@@ -146,3 +169,20 @@ bool World::MouseUp(SDL_Event &event)
 	return false;
 }
 
+void World::ScreenToWorld(float &wx, float &wy, float sx, float sy)
+{
+	float tw = float(tileWidth >> 1);
+	float th = float(tileHeight >> 1);
+	wx = 0.5f * (sy / th + sx / tw) + 1.0;
+	wy = 0.5f * (sy / th - sx / tw);
+}
+
+void World::WorldToScreen(float &sx, float &sy, float wx, float wy)
+{
+	float tw = float(tileWidth >> 1);
+	float th = float(tileHeight >> 1);
+	sx = wx * tw - wy * tw - tw;
+	sy = wx * th + wy * th - th;
+	//sx = wx * tw - wy * tw + tw;
+	//sy = wx * th + wy * th + th;
+}

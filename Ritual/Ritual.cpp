@@ -5,9 +5,14 @@
 #include "Ritual.h"
 #include "World.h"
 #include "Scrub.h"
+#include "Button.h"
 
 World *g_world;
 Scrub *g_scrub;
+
+const int nButtons = 5;
+Button *g_buttons[nButtons];
+int selectedButton = 0;
 
 int main(int argc, char* argv[])
 {
@@ -20,6 +25,8 @@ int main(int argc, char* argv[])
 
 	g_world = new World(renderer, "assets/map");
 	g_scrub = new Scrub(renderer);
+	for (int i = 0; i < 5; i++)
+		g_buttons[i] = new Button(renderer, "assets/tower1.png", 100, 100 + i * 110, 100, 100);
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();
@@ -44,6 +51,16 @@ int main(int argc, char* argv[])
 				break;
 			}
 			if (g_scrub->Event(event)) continue;
+			bool eatenByButton = false;
+			for (int i = 0; i < nButtons; i++) {
+				bool hit = g_buttons[i]->Event(event);
+				if (hit)
+					selectedButton = i;
+				eatenByButton |= hit;
+			}
+			if (eatenByButton)
+				continue;
+			if (g_scrub->Event(event)) continue;
 			if (g_world->Event(event)) continue;
 		}
 		if (quit)
@@ -53,7 +70,11 @@ int main(int argc, char* argv[])
 		SDL_RenderClear(renderer);
 
 		g_world->Draw(renderer);
+		if (!g_scrub->mClaimedMouse)
+			g_world->DrawMarker(renderer);
 		g_scrub->Draw(renderer);
+		for (int i = 0; i < nButtons; i++)
+			g_buttons[i]->Draw(renderer, i == selectedButton);
 
 		SDL_RenderPresent(renderer);
 	}

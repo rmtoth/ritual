@@ -4,6 +4,9 @@
 struct World {
 
 	float mCamX, mCamY;
+	int mMouseX, mMouseY;
+	SDL_Texture *mMarker;
+	int mMarkerW, mMarkerH;
 
 	struct TileType {
 		SDL_Texture *mTex;
@@ -31,6 +34,9 @@ struct World {
 	bool MouseDown(SDL_Event &event);
 	bool MouseMove(SDL_Event &event);
 	bool MouseUp(SDL_Event &event);
+
+	void ScreenToWorld(float &wx, float &wy, float sx, float sy);
+	void WorldToScreen(float &sx, float &sy, float wx, float wy);
 
 
 };
