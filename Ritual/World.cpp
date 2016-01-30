@@ -239,7 +239,7 @@ void World::DrawMarker(SDL_Renderer *renderer)
 	srcrect.h = RES_Y;
 
 	float sx, sy;
-	WorldToScreen(sx, sy, int(wx), int(wy));
+	WorldToScreen(sx, sy, floor(wx), floor(wy));
 
 	dstrect.x = int(mCamX + sx + 0.5f);
 	dstrect.y = int(mCamY + sy + 0.5f);
@@ -278,7 +278,7 @@ bool World::MouseDown(SDL_Event &event)
 	}
 
 	if (event.button.button == 1) {
- 		BuildTower(0.0f, buildX, buildY, 0);
+ 		BuildTower(g_scrub->mTime, buildX, buildY, 0);
 		return true;
 	}
 
@@ -306,7 +306,7 @@ void World::ScreenToWorld(float &wx, float &wy, float sx, float sy)
 {
 	float tw = float(tileWidth >> 1);
 	float th = float(tileHeight >> 1);
-	wx = 0.5f * (sy / th + sx / tw) + 1.0;
+	wx = 0.5f * (sy / th + sx / tw) + 1.0f;
 	wy = 0.5f * (sy / th - sx / tw);
 }
 

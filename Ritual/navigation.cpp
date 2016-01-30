@@ -71,21 +71,19 @@ bool ComputePotentialField(float t, potential_field &pf)
 	priority_queue<node> Q;
 	int initial_cell = g_world->mDest.x + g_world->mDest.y * pf.w;
 	Q.push({ 0, initial_cell, -1 });
-	unordered_set<int> visited;
 	while (!Q.empty())
 	{
 		node n = Q.top();
 		Q.pop();
-		if (!visited.insert(n.cell).second)
+		if (blocked[n.cell])
 			continue;
+		blocked[n.cell] = 1;
 		next[n.cell] = n.from;
 		float slowness = 1.0f / g_world->mWalkCost[n.cell];
 		for (auto &fn : FieldNeighbors)
 		{
 			int nextcell = n.cell + fn.dx + fn.dy * pf.w;
 			if (blocked[nextcell])
-				continue;
-			if (visited.find(nextcell) != visited.end())
 				continue;
 			Q.push({ n.cost + fn.dist * slowness, nextcell, n.cell });
 		}
