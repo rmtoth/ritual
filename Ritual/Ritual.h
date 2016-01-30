@@ -44,6 +44,12 @@ struct position {
 	int x, y;
 };
 
+struct position_transition {
+	int x0, y0;
+	int x1, y1;
+	float lerp;
+};
+
 struct health {
 	float t;
 	float hp;
@@ -59,6 +65,7 @@ struct span {
 
 struct unit {
 	span alive;
+	int type;
 	vector<position> path;
 	vector<health> hp;
 };
@@ -66,6 +73,7 @@ struct unit {
 struct tower {
 	span alive;
 	int x, y;
+	int type;
 	vector<interaction*> shots;
 };
 
@@ -81,6 +89,7 @@ struct drawable {
 };
 
 void GetDrawables(float t, vector<drawable>&);
+bool BuildTower(float t, int x, int y, int type);
 void TestSim();
 
 extern vector<tower> g_towers;

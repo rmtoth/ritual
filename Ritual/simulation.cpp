@@ -5,6 +5,20 @@ vector<tower> g_towers;
 vector<unit> g_units;
 list<potential_field> g_potential_fields;
 
+bool position_finder(const position &p, float t)
+{
+	return p.t <= t;
+}
+
+position_transition GetPositionTransition(unit &u, float t)
+{
+	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
+	auto hi = lo + 1;
+	position_transition pt = { lo->x, lo->y, hi->x, hi->y };
+	pt.lerp = (t - lo->t) / (hi->t - lo->t);
+	return pt;
+}
+
 static const struct {
 	int dx, dy;
 	float dist;
@@ -63,7 +77,21 @@ bool ComputePotentialField(float t, potential_field &pf)
 		}
 	}
 
-	// TODO: Validate if this was OK
+	// Validate that we didn't trap any units
+	for (auto &u : g_units)
+	{
+		if (!u.alive(t))
+			continue;
+		position_transition pt = GetPositionTransition(u, t);
+		int cell = pt.x0 + pt.y0 * pf.w;
+		if (next[cell] == -1)
+			return false;
+		cell = pt.x1 + pt.y1 * pf.w;
+		if (next[cell] == -1 && cell != initial_cell)
+			return false;
+	}
+
+	// TODO: Validate if spawn points are not trapped
 
 	return true;
 }
