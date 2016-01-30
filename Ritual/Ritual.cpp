@@ -28,6 +28,8 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < 5; i++)
 		g_buttons[i] = new Button(renderer, "assets/tower1.png", 100, 100 + i * 110, 100, 100);
 
+	InitSim();
+
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();
 	double nowTime = double(perfCnt) / double(perfFreq);
