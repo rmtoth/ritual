@@ -92,6 +92,7 @@ struct potential_field {
 struct drawable {
 	int sprite;
 	float x, y;
+	float health;
 	int variation = 0;
 };
 
