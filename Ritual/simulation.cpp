@@ -35,10 +35,10 @@ void CreateUnit(position p)
 // TODO: Implement this one!
 void SpawnTimeInterval(float t0, float t1)
 {
-	// Temp: create one unit per second.
-	for (float t = ceil(t0); t < t1; t += 1.0f)
+	// Temp: create one unit per 10 seconds.
+	for (float t = ceil(t0); t < t1; t += 10.0f)
 	{
-		position p = { t, 100, 100 };
+		position p = { t, 20, 20 };
 		CreateUnit(p);
 	}
 }
