@@ -56,11 +56,20 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
+	fn = filename + "_weights.png";
+	lodepng_decode32_file(&img, &w, &h, fn.c_str());
+	mWalkCost = new float[mWidth * mHeight];
+	for (u32 i = 0; i < mWidth * mHeight; i++) {
+		u32 col = *((u32 *)&img[i * 4]) & 0x000000FF;
+		mWalkCost[i] = float(col) / 255.0f;
+	}
+	free(img);
+
 	// Objects, like trees
 	fn = filename + "_objects.png";
 	lodepng_decode32_file(&img, &w, &h, fn.c_str());
 	mTileObjects = new int[mWidth * mHeight];
-	for (u32 i = 0; i < mWidth * mHeight; i++) 
+	for (u32 i = 0; i < mWidth * mHeight; i++)
 	{
 		u32 col = *((u32 *)&img[i * 4]) & 0x00FFFFFF;
 		ProcessObjectColor(col, i);
@@ -76,19 +85,11 @@ World::World(SDL_Renderer *renderer, string filename)
 			d.x = float(i % mWidth);
 			d.y = float(i / mWidth);
 			d.variation = rand() % mObjectTypes[d.sprite].size();
+			d.health = 0.0f;
+			mWalkCost[i] = d.sprite == spawnPointColor ? mWalkCost[i] : 0;
 			objectsToRender.push_back(d);
 		}
-		
-	}
-	free(img);
 
-
-	fn = filename + "_weights.png";
-	lodepng_decode32_file(&img, &w, &h, fn.c_str());
-	mWalkCost = new float[mWidth * mHeight];
-	for (u32 i = 0; i < mWidth * mHeight; i++) {
-		u32 col = *((u32 *)&img[i * 4]) & 0x000000FF;
-		mWalkCost[i] = float(col) / 255.0f;
 	}
 	free(img);
 
@@ -194,25 +195,33 @@ void World::Draw(SDL_Renderer *renderer)
 		TileType *tt = mObjectTypes[d.sprite][d.variation];
 
 		RenderIsoSprite(renderer, *mShadow, int(fx), int(fy), mShadowW, mShadowH);
-
 		RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
-
-		//dstrect.x = int(fx) - (mShadowW >> 1);
-		//dstrect.y = int(fy) - (mShadowH >> 1) - (tileHeight >> 1);
-		//dstrect.w = mShadowW;
-		//dstrect.h = mShadowH;
-		//SDL_RenderCopy(renderer, mShadow, &srcrect, &dstrect);
-		//
-		//dstrect.x = int(fx) - (tt->mW >> 1);
-		//dstrect.y = int(fy) - (tt->mH >> 1) - (tileHeight >> 1);
-		//dstrect.w = tt->mW;
-		//dstrect.h = tt->mH;
-		//SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
-
 	}
 	
-
-
+	for (drawable& d : doodadToRender)
+	{
+		if (d.health == 0.0f)
+			continue;
+		WorldToScreen(fx, fy, float(d.x), float(d.y));
+		SDL_Rect rect;
+		rect.x = int(fx) - 16;
+		rect.y = int(fy) + 10;
+		rect.w = 32;
+		rect.h = 8;
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_MOD);
+		SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
+		SDL_RenderFillRect(renderer, &rect);
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderDrawRect(renderer, &rect);
+		rect.x += 2;
+		rect.y += 2;
+		rect.w = int(32.0f * d.health + 0.999f);
+		rect.w -= 4;
+		rect.h -= 4;
+		SDL_SetRenderDrawColor(renderer, 20, 180, 20, 255);
+		SDL_RenderFillRect(renderer, &rect);
+	}
 }
 
 void World::DrawMarker(SDL_Renderer *renderer)

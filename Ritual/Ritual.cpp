@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 		perfFreq = SDL_GetPerformanceFrequency();
 		nowTime = double(perfCnt) / double(perfFreq);
 		double ddeltatime = nowTime - lastTime;
+		ddeltatime = ddeltatime > 0.1 ? 0.1 : ddeltatime;
 		//printf("%f\n", ddeltatime);
 
 		SDL_Event event;
@@ -99,7 +100,7 @@ int main(int argc, char* argv[])
 			g_buttons[i]->Draw(renderer, i == selectedButton);
 		g_playpause[0]->Draw(renderer, isPlaying);
 		g_playpause[1]->Draw(renderer, !isPlaying);
-		SimDebugDraw(renderer);
+		SimDebugDraw(renderer, g_scrub->mTime);
 		SDL_RenderPresent(renderer);
 	}
 
