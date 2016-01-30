@@ -102,7 +102,7 @@ bool BuildTower(float t, int x, int y, int type);
 // TODO: bool SellTower(float t, int x, int y);
 // TODO: bool EraseTower(float t, int x, int y);
 float GetGameOverTime();
-void SimDebugDraw(SDL_Renderer*);
+void SimDebugDraw(SDL_Renderer*, float t);
 //==============
 
 //== Nav API ===

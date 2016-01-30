@@ -39,23 +39,6 @@ static const struct {
 	{ +1, +1, 1.4f },
 };
 
-vector<pair<int, int>> debuglines;
-void SimDebugDraw(SDL_Renderer *r)
-{
-	for (auto &l : debuglines)
-	{
-		if ((l.first == -1) || (l.second == -1)) continue;
-		float x0 = float(l.first % 64);
-		float y0 = float(l.first / 64);
-		float x1 = float(l.second % 64);
-		float y1 = float(l.second / 64);
-		float sx0, sy0, sx1, sy1;
-		g_world->WorldToScreen(sx0, sy0, x0, y0);
-		g_world->WorldToScreen(sx1, sy1, x1, y1);
-		SDL_RenderDrawLine(r, (int)sx0, (int)sy0, (int)sx1, (int)sy1);
-	}
-}
-
 bool ComputePotentialField(float t, potential_field &pf)
 {
 	pf.w = g_world->mWidth;
@@ -88,7 +71,6 @@ bool ComputePotentialField(float t, potential_field &pf)
 	priority_queue<node> Q;
 	int initial_cell = g_world->mDest.x + g_world->mDest.y * pf.w;
 	Q.push({ 0, initial_cell, -1 });
-	debuglines.clear();
 	while (!Q.empty())
 	{
 		node n = Q.top();
@@ -97,7 +79,6 @@ bool ComputePotentialField(float t, potential_field &pf)
 			continue;
 		blocked[n.cell] = 1;
 		next[n.cell] = n.from;
-		debuglines.push_back({ n.from, n.cell });
 		float slowness = 1.0f / g_world->mWalkCost[n.cell];
 		for (auto &fn : FieldNeighbors)
 		{
@@ -142,6 +123,26 @@ list<potential_field>::iterator GetPotentialField(float t)
 	}
 	__debugbreak();
 	return g_potential_fields.end();
+}
+
+void SimDebugDraw(SDL_Renderer *r, float t)
+{
+	auto it = GetPotentialField(t);
+	int w = it->w;
+	int *next = &it->next[0];
+	for (int i = 0; i < w * it->h; ++i)
+	{
+		int j = next[i];
+		if (j == -1) continue;
+		float x0 = float(i % w);
+		float y0 = float(i / w);
+		float x1 = float(j % w);
+		float y1 = float(j / w);
+		float sx0, sy0, sx1, sy1;
+		g_world->WorldToScreen(sx0, sy0, x0, y0);
+		g_world->WorldToScreen(sx1, sy1, x1, y1);
+		SDL_RenderDrawLine(r, (int)sx0, (int)sy0, (int)sx1, (int)sy1);
+	}
 }
 
 // Path vector of u is valid but incomplete.

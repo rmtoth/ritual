@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 		g_scrub->Draw(renderer);
 		for (int i = 0; i < nButtons; i++)
 			g_buttons[i]->Draw(renderer, i == selectedButton);
-		SimDebugDraw(renderer);
+		SimDebugDraw(renderer, g_scrub->mTime);
 		SDL_RenderPresent(renderer);
 	}
 
