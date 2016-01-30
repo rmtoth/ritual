@@ -92,7 +92,7 @@ struct potential_field {
 struct drawable {
 	int sprite;
 	float x, y;
-	int variation;
+	int variation = 0;
 };
 
 //== Sim API ==
