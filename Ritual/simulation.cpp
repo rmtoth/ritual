@@ -177,5 +177,27 @@ void InitSim()
 
 void GetDrawables(float t, vector<drawable> &stuff)
 {
-	
+	for (auto &u : g_units)
+	{
+		if (u.alive(t))
+		{
+			position_transition pt = GetPositionTransition(u, t);
+			drawable d;
+			d.sprite = 0; // TODO
+			d.x = pt.x0 + (pt.x1 - pt.x0) * pt.lerp;
+			d.y = pt.y0 + (pt.y1 - pt.y0) * pt.lerp;
+			stuff.push_back(d);
+		}
+	}
+	for (auto &u : g_towers)
+	{
+		if (u.alive(t))
+		{
+			drawable d;
+			d.sprite = 1; // TODO
+			d.x = (float)u.x;
+			d.y = (float)u.y;
+			stuff.push_back(d);
+		}
+	}
 }
