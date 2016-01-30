@@ -13,9 +13,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	mCamX = 0.0f;
 	mCamY = 0.0f;
 
-	AddTile(renderer, 0, "assets/tile_gravel.png");
+	AddTile(renderer, 0, "assets/tile_gravel2.png");
 	AddTile(renderer, 1, "assets/tile_grass.png");
-	AddTile(renderer, 2, "assets/tile_grass_flat.png");
+	AddTile(renderer, 2, "assets/tile_grass_flat2.png");
 	AddTile(renderer, 3, "assets/tile_concrete.png");
 	AddTile(renderer, 4, "assets/tile_grass.png");
 	AddTile(renderer, 6, "assets/tile_grass_flat_wall.png");
@@ -151,14 +151,6 @@ void World::AddObject(SDL_Renderer *renderer, int i, string filename)
 void World::Draw(SDL_Renderer *renderer)
 {
 
-	SDL_Rect srcrect;
-	SDL_Rect dstrect;
-
-	srcrect.x = 0;
-	srcrect.y = 0;
-	srcrect.w = RES_X;
-	srcrect.h = RES_Y;
-
 	int camX = int(mCamX + 0.5f);
 	int camY = int(mCamY + 0.5f);
 
@@ -166,25 +158,16 @@ void World::Draw(SDL_Renderer *renderer)
 
 	for (u32 y = 0; y < mHeight; y++) {
 		for (u32 x = 0; x < mWidth; x++) {
-
 			int i = y * mWidth + x;
 			int t = mTiles[i];
 			TileType *tt = mTileTypes.find(t)->second;
 
-			//dstrect.x = camX + x * (tileWidth >> 1) - y * (tileWidth >> 1) + (tileWidth >> 1);
-			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
-
 			WorldToScreen(fx, fy, float(x), float(y));
-			dstrect.x = int(fx);
-			dstrect.y = int(fy);
-			dstrect.w = tt->mW;
-			dstrect.h = tt->mH;
 
-			if (dstrect.x < -200 || dstrect.y < -200 || dstrect.x > RES_X + 200 || dstrect.y > RES_Y + 200)
+			if (fx < -200 || fy < -200 || fx > RES_X + 200 || fy > RES_Y + 200)
 				continue;
 
-			SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
-		
+			RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
 		}
 	}
 
@@ -207,19 +190,24 @@ void World::Draw(SDL_Renderer *renderer)
 	for (drawable& d : doodadToRender)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
-		dstrect.x = int(fx);
-		dstrect.y = int(fy);
-
 
 		TileType *tt = mObjectTypes[d.sprite][d.variation];
 
-		dstrect.w = mShadowW;
-		dstrect.h = mShadowH;
-		SDL_RenderCopy(renderer, mShadow, &srcrect, &dstrect);
+		RenderIsoSprite(renderer, *mShadow, int(fx), int(fy), mShadowW, mShadowH);
 
-		dstrect.w = tt->mW;
-		dstrect.h = tt->mH;
-		SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
+		RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
+
+		//dstrect.x = int(fx) - (mShadowW >> 1);
+		//dstrect.y = int(fy) - (mShadowH >> 1) - (tileHeight >> 1);
+		//dstrect.w = mShadowW;
+		//dstrect.h = mShadowH;
+		//SDL_RenderCopy(renderer, mShadow, &srcrect, &dstrect);
+		//
+		//dstrect.x = int(fx) - (tt->mW >> 1);
+		//dstrect.y = int(fy) - (tt->mH >> 1) - (tileHeight >> 1);
+		//dstrect.w = tt->mW;
+		//dstrect.h = tt->mH;
+		//SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
 
 	}
 	
@@ -235,21 +223,10 @@ void World::DrawMarker(SDL_Renderer *renderer)
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return;
 
-	SDL_Rect srcrect, dstrect;
-	srcrect.x = 0;
-	srcrect.y = 0;
-	srcrect.w = RES_X;
-	srcrect.h = RES_Y;
-
 	float sx, sy;
-	WorldToScreen(sx, sy, floor(wx), floor(wy));
+	WorldToScreen(sx, sy, floor(wx + 0.5f), floor(wy + 0.5f));
 
-	dstrect.x = int(sx + 0.5f);
-	dstrect.y = int(sy + 0.5f);
-	dstrect.w = mMarkerW;
-	dstrect.h = mMarkerH;
-
-	SDL_RenderCopy(renderer, mMarker, &srcrect, &dstrect);
+	RenderIsoSprite(renderer, *mMarker, int(sx), int(sy), mMarkerW, mMarkerH);
 }
 
 
@@ -273,8 +250,8 @@ bool World::MouseDown(SDL_Event &event)
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return false;
 
-	int buildX = int(wx);
-	int buildY = int(wy);
+	int buildX = int(wx + 0.5f);
+	int buildY = int(wy + 0.5f);
 	for (auto &it : objectsToRender) {
 		if (int(it.x) == buildX && int(it.y) == buildY)
 			return false;
@@ -323,4 +300,22 @@ void World::WorldToScreen(float &sx, float &sy, float wx, float wy)
 	sy = wx * th + wy * th - th + mCamY;
 	//sx = wx * tw - wy * tw + tw;
 	//sy = wx * th + wy * th + th;
+}
+
+
+void World::RenderIsoSprite(SDL_Renderer *renderer, SDL_Texture &tex, int x, int y, int w, int h)
+{
+	SDL_Rect srcrect;
+	srcrect.x = 0;
+	srcrect.y = 0;
+	srcrect.w = RES_X;
+	srcrect.h = RES_Y;
+
+	SDL_Rect dstrect;
+	dstrect.x = x - (w >> 1);
+	dstrect.y = y - (h >> 1) - (tileHeight >> 1);
+	dstrect.w = w;
+	dstrect.h = h;
+
+	SDL_RenderCopy(renderer, &tex, &srcrect, &dstrect);
 }
