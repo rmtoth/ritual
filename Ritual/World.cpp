@@ -13,6 +13,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	mCamX = 0.0f;
 	mCamY = 0.0f;
 
+	myAudioManager.Init();
+
 	AddTile(renderer, 0, "assets/tile_gravel2.png");
 	AddTile(renderer, 1, "assets/tile_grass.png");
 	AddTile(renderer, 2, "assets/tile_grass_flat2.png");

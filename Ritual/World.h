@@ -1,5 +1,6 @@
 #pragma once
 #include "Ritual.h"
+#include "AudioManager.h"
 
 struct World {
 
@@ -64,6 +65,7 @@ struct World {
 
 	void RenderIsoSprite(SDL_Renderer *renderer, SDL_Texture &tex, int x, int y, int w, int h);
 
+	CAudioManager myAudioManager;
 };
 
 
