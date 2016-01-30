@@ -24,7 +24,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
-	sprintf(buf, "%s.png", filename.c_str());
+	sprintf_s(buf, "%s.png", filename.c_str());
 
 	lodepng_decode32_file(&img, &mWidth, &mHeight, buf);
 	mTiles = new int[mWidth * mHeight];
@@ -40,7 +40,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
-	sprintf(buf, "%s_weights.png", filename.c_str());
+	sprintf_s(buf, "%s_weights.png", filename.c_str());
 	lodepng_decode32_file(&img, &w, &h, buf);
 	mWalkCost = new float[mWidth * mHeight];
 	for (u32 i = 0; i < mWidth * mHeight; i++) {

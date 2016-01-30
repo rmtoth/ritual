@@ -19,7 +19,7 @@ static const struct {
 	{ +1, +1, 1.4f },
 };
 
-void ComputePotentialField(float t, potential_field &pf)
+bool ComputePotentialField(float t, potential_field &pf)
 {
 	pf.w = g_world->mWidth;
 	pf.h = g_world->mHeight;
@@ -54,7 +54,18 @@ void ComputePotentialField(float t, potential_field &pf)
 		if (!visited.insert(n.cell).second)
 			continue;
 		next[n.cell] = n.from;
+		for (auto &fn : FieldNeighbors)
+		{
+			int nextcell = n.cell + fn.dx + fn.dy * pf.w;
+			if (visited.find(nextcell) != visited.end())
+				continue;
+			Q.push({ n.cost + fn.dist, nextcell, n.cell });
+		}
 	}
+
+	// TODO: Validate if this was OK
+
+	return true;
 }
 
 potential_field* GetPotentialField(float t)
