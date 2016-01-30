@@ -23,7 +23,10 @@
     <ClInclude Include="Ritual.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Misc.h">
+    <ClInclude Include="World.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonConverters.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,6 +41,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="simulation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

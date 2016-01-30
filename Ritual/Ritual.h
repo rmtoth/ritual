@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <queue>
+#include <unordered_map>
 #include <algorithm>
 #include <math.h>
 #include <limits>
@@ -13,6 +14,22 @@
 using namespace std;
 
 static const float inf = numeric_limits<float>::infinity();
+
+#define RES_X		640
+#define RES_Y		480
+
+typedef float					f32;
+typedef	double					f64;
+typedef signed		char		i8;
+typedef unsigned	char		u8;
+typedef signed		short		i16;
+typedef unsigned	short		u16;
+typedef signed		int			i32;
+typedef unsigned	int			u32;
+typedef signed		__int64		i64;
+typedef unsigned	__int64		u64;
+typedef signed		long long	i64;
+typedef unsigned	long long	u64;
 
 struct unit;
 struct tower;
