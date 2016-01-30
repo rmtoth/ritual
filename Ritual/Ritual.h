@@ -1,11 +1,11 @@
 #pragma once
 
 #include "include\SDL.h"
+#include "lodepng.h"
 #include <vector>
-#include <hash_map>
-#include <hash_set>
 #include <list>
 #include <algorithm>
+#include "Misc.h"
 using namespace std;
 
 struct unit;
