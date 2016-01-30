@@ -14,6 +14,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 3, "assets/tile_concrete.png");
 	AddTile(renderer, 4, "assets/tile_grass.png");
 
+	AddObject(renderer, 5, "assets/tile_tree1.png");
+
 	u32 w, h;
 	u8 *img;
 	lodepng_decode32_file(&img, &w, &h, "assets/palette.png");
@@ -39,6 +41,23 @@ World::World(SDL_Renderer *renderer, string filename)
 	}
 	free(img);
 
+	// Objects, like trees
+	fn = filename + "_objects.png";
+	lodepng_decode32_file(&img, &w, &h, fn.c_str());
+	mTileObjects = new int[mWidth * mHeight];
+	for (u32 i = 0; i < mWidth * mHeight; i++) 
+	{
+		u32 col = *((u32 *)&img[i * 4]) & 0x00FFFFFF;
+		auto c = mPaletteMap.find(col);
+		if (c != mPaletteMap.end()) 
+		{
+			mTileObjects[i] = c->second;
+		}
+		
+	}
+	free(img);
+
+
 	fn = filename + "_weights.png";
 	lodepng_decode32_file(&img, &w, &h, fn.c_str());
 	mWalkCost = new float[mWidth * mHeight];
@@ -56,6 +75,7 @@ World::World(SDL_Renderer *renderer, string filename)
 World::~World()
 {
 	delete [] mTiles;
+	delete[] mTileObjects;
 }
 
 void World::AddTile(SDL_Renderer *renderer, int i, string filename)
@@ -73,6 +93,20 @@ void World::AddTile(SDL_Renderer *renderer, int i, string filename)
 	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 }
 
+void World::AddObject(SDL_Renderer *renderer, int i, string filename)
+{
+	int w, h;
+	SDL_Texture *tex = ImgToTex(renderer, filename, w, h);
+
+	TileType *tt = new TileType();
+	tt->mTex = tex;
+	tt->mW = w;
+	tt->mH = h;
+
+	mObjectTypes[i] = tt;
+
+	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
+}
 
 
 void World::Draw(SDL_Renderer *renderer)
@@ -92,6 +126,7 @@ void World::Draw(SDL_Renderer *renderer)
 	int camX = int(mCamX + 0.5f);
 	int camY = int(mCamY + 0.5f);
 
+	vector<ObjecRender> objectsToRender;
 	for (u32 y = 0; y < mHeight; y++) {
 
 		for (u32 x = 0; x < mWidth; x++) {
@@ -109,8 +144,29 @@ void World::Draw(SDL_Renderer *renderer)
 				continue;
 
 			SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
+			
+			int objectIndex = mTileObjects[i];
+			if (mObjectTypes.find(objectIndex) != mObjectTypes.end())
+			{
+				TileType *objectTileType = mObjectTypes.find(objectIndex)->second;
+				if (objectTileType)
+				{
+					ObjecRender renderObject;
+					renderObject.mRect = dstrect;
+					renderObject.mType = objectTileType;
+					objectsToRender.push_back(renderObject);
+				}
+			}
+
 		}
 	}
+
+	for (ObjecRender& tile : objectsToRender)
+	{
+		SDL_RenderCopy(renderer, tile.mType->mTex, &srcrect, &tile.mRect);
+	}
+
+
 }
 
 void World::DrawMarker(SDL_Renderer *renderer)

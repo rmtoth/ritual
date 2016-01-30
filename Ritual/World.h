@@ -9,9 +9,17 @@ struct World {
 		SDL_Texture *mTex;
 		int mW, mH;
 	};
+
+	struct ObjecRender
+	{
+		TileType* mType;
+		SDL_Rect mRect;
+	};
 	unordered_map<int, TileType *> mTileTypes;
+	unordered_map<int, TileType *> mObjectTypes;
 
 	int *mTiles;
+	int *mTileObjects;
 	float *mWalkCost;
 
 	i2 mDest;
@@ -26,6 +34,7 @@ struct World {
 	~World();
 
 	void AddTile(SDL_Renderer *renderer, int i, string filename);
+	void AddObject(SDL_Renderer *renderer, int i, string filename);
 
 	void Draw(SDL_Renderer *renderer);
 	void DrawMarker(SDL_Renderer *renderer);
