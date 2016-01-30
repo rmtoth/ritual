@@ -3,13 +3,13 @@
 
 #include "stdafx.h"
 #include "Ritual.h"
-#include "include\SDL_main.h"
+//#include "include\SDL_main.h"
 
 #define RES_X		640
 #define RES_Y		480
 
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 

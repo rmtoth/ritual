@@ -17,6 +17,9 @@
     <ClInclude Include="targetver.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="Ritual.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="Misc.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -26,9 +29,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Ritual.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Misc.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
