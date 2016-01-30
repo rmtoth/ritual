@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 
 	g_world = new World(renderer, "assets/map");
 	g_scrub = new Scrub(renderer);
+	InitSim();
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();

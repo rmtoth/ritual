@@ -39,13 +39,18 @@ bool ComputePotentialField(float t, potential_field &pf)
 	pf.h = g_world->mHeight;
 	pf.next.resize(0);
 	pf.next.resize(pf.w * pf.h, -1);
-	vector<bool> blocked(pf.w*pf.h, false);
+	vector<int> blocked_arr(pf.w*pf.h, 0);
+	int *blocked = &blocked_arr[0];
+	for (int x = 0; x < pf.w; ++x)
+		blocked[x] = blocked[x + (pf.h - 1) * pf.w] = 1;
+	for (int y = 0; y < pf.h; ++y)
+		blocked[y*pf.w] = blocked[(y + 1) * pf.w - 1] = 1;
 	for (auto &tower : g_towers)
 	{
 		if (tower.alive(t))
 		{
 			int cell = tower.x + tower.y * pf.w;
-			blocked[cell] = true;
+			blocked[cell] = 1;
 		}
 	}
 	int *next = &pf.next[0];
@@ -71,6 +76,8 @@ bool ComputePotentialField(float t, potential_field &pf)
 		for (auto &fn : FieldNeighbors)
 		{
 			int nextcell = n.cell + fn.dx + fn.dy * pf.w;
+			if (blocked[nextcell])
+				continue;
 			if (visited.find(nextcell) != visited.end())
 				continue;
 			Q.push({ n.cost + fn.dist, nextcell, n.cell });
@@ -162,8 +169,7 @@ void SpawnTimeInterval(float t0, float t1)
 void InitSim()
 {
 	g_potential_fields.resize(1);
-	auto &pf = *g_potential_fields.begin();
-	pf.alive = span();
+	potential_field &pf = *g_potential_fields.begin();
 	ComputePotentialField(0, pf);
 
 	CreateUnit({ 1, 10, 10 });
