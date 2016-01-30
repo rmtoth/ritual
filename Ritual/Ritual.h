@@ -5,8 +5,12 @@
 #include <vector>
 #include <list>
 #include <algorithm>
-#include "Misc.h"
+#include <unordered_map>
+
 using namespace std;
+
+#define RES_X		640
+#define RES_Y		480
 
 typedef float					f32;
 typedef	double					f64;

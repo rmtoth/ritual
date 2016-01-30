@@ -3,18 +3,9 @@
 
 #include "stdafx.h"
 #include "Ritual.h"
+#include "World.h"
 
-#define RES_X		640
-#define RES_Y		480
-
-//u32 rmask = 0xff000000;
-//u32 gmask = 0x00ff0000;
-//u32 bmask = 0x0000ff00;
-//u32 amask = 0x000000ff;
-u32 rmask = 0x000000ff;
-u32 gmask = 0x0000ff00;
-u32 bmask = 0x00ff0000;
-u32 amask = 0xff000000;
+World *world;
 
 int main(int argc, char* argv[])
 {
@@ -25,36 +16,13 @@ int main(int argc, char* argv[])
 
 	bool quit = false;
 
+	world = new World(renderer, "assets/map.png");
+
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();
 	double nowTime = double(perfCnt) / double(perfFreq);
 
 	SDL_Surface *winSurf = SDL_GetWindowSurface(window);
-	u8 *img;
-	u32 imgw, imgh;
-	lodepng_decode32_file(&img, &imgw, &imgh, "assets/tile.png");
-
-	SDL_Surface *image = SDL_CreateRGBSurface(0, imgw, imgh, 32, rmask, gmask, bmask, amask);
-	SDL_LockSurface(image);
-	memcpy(image->pixels, img, 4 * imgw * imgh);
-	SDL_UnlockSurface(image);
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, image);
-
-	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
-
-	SDL_Rect srcrect;
-	SDL_Rect dstrect;
-
-	srcrect.x = 0;
-	srcrect.y = 0;
-	srcrect.w = RES_X;
-	srcrect.h = RES_Y;
-
-	dstrect.x = 0;
-	dstrect.y = 0;
-	dstrect.w = imgw;
-	dstrect.h = imgh;
-
 
 	for (;;) {
 
@@ -74,7 +42,7 @@ int main(int argc, char* argv[])
 		if (quit)
 			break;
 
-		SDL_RenderCopy(renderer, tex, &srcrect, &dstrect);
+		world->Draw(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
