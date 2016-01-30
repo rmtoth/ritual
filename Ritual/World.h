@@ -26,7 +26,7 @@ struct World {
 	vector<drawable> doodadToRender;
 
 	unordered_map<int, TileType *> mTileTypes;
-	unordered_map<int, TileType *> mObjectTypes;
+	unordered_map<int, vector<TileType *>> mObjectTypes;
 
 	int *mTiles;
 	int *mTileObjects;
