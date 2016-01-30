@@ -5,7 +5,6 @@ struct World {
 
 	float mCamX, mCamY;
 
-
 	struct TileType {
 		SDL_Texture *mTex;
 		int mW, mH;
@@ -19,7 +18,6 @@ struct World {
 
 	unsigned int mWidth, mHeight;
 	unordered_map<u32, int> mPaletteMap;
-
 
 	World(SDL_Renderer *renderer, string filename);
 	~World();

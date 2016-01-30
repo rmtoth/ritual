@@ -103,7 +103,7 @@ void FindRemainingPath(unit &u)
 			float dist = 1;
 			if ((x2 - x != 0) && (y2 - y != 0))
 				dist = 1.4f;
-			float t2 = t + g_speedfield[cell] * dist;
+			float t2 = t + g_world->mWalkCost[cell] * dist;
 			u.path.push_back({ t2, x2, y2 });
 			x = x2;
 			y = y2;

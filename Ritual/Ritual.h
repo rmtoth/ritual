@@ -86,4 +86,3 @@ void TestSim();
 extern vector<tower> g_towers;
 extern vector<unit> g_units;
 extern struct World *g_world;
-extern float *g_speedfield;
