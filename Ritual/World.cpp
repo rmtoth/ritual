@@ -1,4 +1,6 @@
+#include "Ritual.h"
 #include "World.h"
+#include "Scrub.h"
 
 static const int tileWidth = 64;
 static const int tileHeight = 32;
@@ -20,6 +22,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 5, "assets/tile_tree1.png");
 	AddObject(renderer, 32, "assets/tile_spawn.png");
 	AddObject(renderer, 50, "assets/tower1.png");
+	AddObject(renderer, 80, "assets/tower1.png");
 
 	u32 w, h;
 	u8 *img;
@@ -178,7 +181,7 @@ void World::Draw(SDL_Renderer *renderer)
 
 
 	unitsToRender.clear();
-	GetDrawables(0.0f, unitsToRender);
+	GetDrawables(g_scrub->mTime * 60.0f, unitsToRender);
 
 	doodadToRender.clear();
 
