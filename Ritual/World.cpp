@@ -175,8 +175,8 @@ void World::Draw(SDL_Renderer *renderer)
 			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
 
 			WorldToScreen(fx, fy, float(x), float(y));
-			dstrect.x = int(fx) + camX;
-			dstrect.y = int(fy) + camY;
+			dstrect.x = int(fx);
+			dstrect.y = int(fy);
 			dstrect.w = tt->mW;
 			dstrect.h = tt->mH;
 
@@ -190,7 +190,7 @@ void World::Draw(SDL_Renderer *renderer)
 
 
 	unitsToRender.clear();
-	GetDrawables(g_scrub->mTime * 60.0f, unitsToRender);
+	GetDrawables(g_scrub->mTime, unitsToRender);
 
 	doodadToRender.clear();
 
@@ -207,8 +207,8 @@ void World::Draw(SDL_Renderer *renderer)
 	for (drawable& d : doodadToRender)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
-		dstrect.x = int(fx) + camX;
-		dstrect.y = int(fy) + camY;
+		dstrect.x = int(fx);
+		dstrect.y = int(fy);
 
 
 		TileType *tt = mObjectTypes[d.sprite][d.variation];
@@ -230,7 +230,7 @@ void World::Draw(SDL_Renderer *renderer)
 void World::DrawMarker(SDL_Renderer *renderer)
 {
 	float wx, wy;
-	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
+	ScreenToWorld(wx, wy, float(mMouseX), float(mMouseY));
 
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return;
@@ -242,10 +242,10 @@ void World::DrawMarker(SDL_Renderer *renderer)
 	srcrect.h = RES_Y;
 
 	float sx, sy;
-	WorldToScreen(sx, sy, int(wx), int(wy));
+	WorldToScreen(sx, sy, floor(wx), floor(wy));
 
-	dstrect.x = int(mCamX + sx + 0.5f);
-	dstrect.y = int(mCamY + sy + 0.5f);
+	dstrect.x = int(sx + 0.5f);
+	dstrect.y = int(sy + 0.5f);
 	dstrect.w = mMarkerW;
 	dstrect.h = mMarkerH;
 
@@ -268,7 +268,7 @@ bool World::Event(SDL_Event &event)
 bool World::MouseDown(SDL_Event &event)
 {
 	float wx, wy;
-	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
+	ScreenToWorld(wx, wy, float(mMouseX), float(mMouseY));
 
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return false;
@@ -281,7 +281,7 @@ bool World::MouseDown(SDL_Event &event)
 	}
 
 	if (event.button.button == 1) {
- 		BuildTower(0.0f, buildX, buildY, 0);
+ 		BuildTower(g_scrub->mTime, buildX, buildY, 0);
 		return true;
 	}
 
@@ -307,9 +307,11 @@ bool World::MouseUp(SDL_Event &event)
 
 void World::ScreenToWorld(float &wx, float &wy, float sx, float sy)
 {
+	sx -= mCamX;
+	sy -= mCamY;
 	float tw = float(tileWidth >> 1);
 	float th = float(tileHeight >> 1);
-	wx = 0.5f * (sy / th + sx / tw) + 1.0;
+	wx = 0.5f * (sy / th + sx / tw) + 1.0f;
 	wy = 0.5f * (sy / th - sx / tw);
 }
 
@@ -317,8 +319,8 @@ void World::WorldToScreen(float &sx, float &sy, float wx, float wy)
 {
 	float tw = float(tileWidth >> 1);
 	float th = float(tileHeight >> 1);
-	sx = wx * tw - wy * tw - tw;
-	sy = wx * th + wy * th - th;
+	sx = wx * tw - wy * tw - tw + mCamX;
+	sy = wx * th + wy * th - th + mCamY;
 	//sx = wx * tw - wy * tw + tw;
 	//sy = wx * th + wy * th + th;
 }

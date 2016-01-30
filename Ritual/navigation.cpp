@@ -16,12 +16,10 @@ position_transition GetEndPosition(unit &u)
 
 position_transition GetPositionTransition(unit &u, float t)
 {
-	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
-	if (lo == u.path.end())
+	auto hi = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
+	if (hi == u.path.end() || hi == u.path.begin())
 		return GetEndPosition(u);
-	auto hi = lo + 1;
-	if (hi == u.path.end())
-		return GetEndPosition(u);
+	auto lo = hi - 1;
 	position_transition pt = { lo->x, lo->y, hi->x, hi->y };
 	pt.lerp = (t - lo->t) / (hi->t - lo->t);
 	return pt;
@@ -40,6 +38,23 @@ static const struct {
 	{ +1, -1, 1.4f },
 	{ +1, +1, 1.4f },
 };
+
+vector<pair<int, int>> debuglines;
+void SimDebugDraw(SDL_Renderer *r)
+{
+	for (auto &l : debuglines)
+	{
+		if ((l.first == -1) || (l.second == -1)) continue;
+		float x0 = float(l.first % 64);
+		float y0 = float(l.first / 64);
+		float x1 = float(l.second % 64);
+		float y1 = float(l.second / 64);
+		float sx0, sy0, sx1, sy1;
+		g_world->WorldToScreen(sx0, sy0, x0, y0);
+		g_world->WorldToScreen(sx1, sy1, x1, y1);
+		SDL_RenderDrawLine(r, sx0, sy0, sx1, sy1);
+	}
+}
 
 bool ComputePotentialField(float t, potential_field &pf)
 {
@@ -73,22 +88,23 @@ bool ComputePotentialField(float t, potential_field &pf)
 	priority_queue<node> Q;
 	int initial_cell = g_world->mDest.x + g_world->mDest.y * pf.w;
 	Q.push({ 0, initial_cell, -1 });
-	unordered_set<int> visited;
+	debuglines.clear();
 	while (!Q.empty())
 	{
 		node n = Q.top();
 		Q.pop();
-		if (!visited.insert(n.cell).second)
+		if (blocked[n.cell])
 			continue;
+		blocked[n.cell] = 1;
 		next[n.cell] = n.from;
+		debuglines.push_back({ n.from, n.cell });
+		float slowness = 1.0f / g_world->mWalkCost[n.cell];
 		for (auto &fn : FieldNeighbors)
 		{
 			int nextcell = n.cell + fn.dx + fn.dy * pf.w;
 			if (blocked[nextcell])
 				continue;
-			if (visited.find(nextcell) != visited.end())
-				continue;
-			Q.push({ n.cost + fn.dist, nextcell, n.cell });
+			Q.push({ n.cost + fn.dist * slowness, nextcell, n.cell });
 		}
 	}
 
