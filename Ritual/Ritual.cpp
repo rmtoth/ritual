@@ -2,8 +2,7 @@
 //
 
 #include "stdafx.h"
-
-#include "include\SDL.h"
+#include "Ritual.h"
 #include "include\SDL_main.h"
 
 #define RES_X		640
