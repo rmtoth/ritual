@@ -249,8 +249,15 @@ bool World::MouseDown(SDL_Event &event)
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return false;
 
+	int buildX = int(wx);
+	int buildY = int(wy);
+	for (auto &it : objectsToRender) {
+		if (int(it.x) == buildX && int(it.y) == buildY)
+			return false;
+	}
+
 	if (event.button.button == 1) {
-		BuildTower(0.0f, int(wx), int(wy), 0);
+ 		BuildTower(0.0f, buildX, buildY, 0);
 		return true;
 	}
 
