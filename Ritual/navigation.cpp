@@ -16,12 +16,10 @@ position_transition GetEndPosition(unit &u)
 
 position_transition GetPositionTransition(unit &u, float t)
 {
-	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
-	if (lo == u.path.end())
+	auto hi = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
+	if (hi == u.path.end() || hi == u.path.begin())
 		return GetEndPosition(u);
-	auto hi = lo + 1;
-	if (hi == u.path.end())
-		return GetEndPosition(u);
+	auto lo = hi - 1;
 	position_transition pt = { lo->x, lo->y, hi->x, hi->y };
 	pt.lerp = (t - lo->t) / (hi->t - lo->t);
 	return pt;
@@ -81,6 +79,7 @@ bool ComputePotentialField(float t, potential_field &pf)
 		if (!visited.insert(n.cell).second)
 			continue;
 		next[n.cell] = n.from;
+		float slowness = 1.0f / g_world->mWalkCost[n.cell];
 		for (auto &fn : FieldNeighbors)
 		{
 			int nextcell = n.cell + fn.dx + fn.dy * pf.w;
@@ -88,7 +87,7 @@ bool ComputePotentialField(float t, potential_field &pf)
 				continue;
 			if (visited.find(nextcell) != visited.end())
 				continue;
-			Q.push({ n.cost + fn.dist, nextcell, n.cell });
+			Q.push({ n.cost + fn.dist * slowness, nextcell, n.cell });
 		}
 	}
 
