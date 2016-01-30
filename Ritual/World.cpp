@@ -72,8 +72,6 @@ World::World(SDL_Renderer *renderer, string filename)
 	free(img);
 
 	mDest = { 32, 32 };
-	mSpawn.push_back({ 10, 10 });
-	mSpawn.push_back({ 20, 15 });
 }
 
 World::~World()
@@ -87,8 +85,10 @@ void World::ProcessObjectColor(u32 col, u32 tileIndex)
 	bool isSpawnPoint = (spawnPointColor == mPaletteMap[col]);
 	if (isSpawnPoint)
 	{
-		int test = 0;
-		test++;
+		int x = tileIndex % mWidth;
+		int y = tileIndex / mWidth;
+
+		mSpawn.push_back({ x, y });
 	}
 
 }
