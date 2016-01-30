@@ -227,7 +227,7 @@ void World::Draw(SDL_Renderer *renderer)
 void World::DrawMarker(SDL_Renderer *renderer)
 {
 	float wx, wy;
-	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
+	ScreenToWorld(wx, wy, float(mMouseX), float(mMouseY));
 
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return;
@@ -265,7 +265,7 @@ bool World::Event(SDL_Event &event)
 bool World::MouseDown(SDL_Event &event)
 {
 	float wx, wy;
-	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
+	ScreenToWorld(wx, wy, float(mMouseX), float(mMouseY));
 
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return false;
@@ -304,6 +304,8 @@ bool World::MouseUp(SDL_Event &event)
 
 void World::ScreenToWorld(float &wx, float &wy, float sx, float sy)
 {
+	sx -= mCamX;
+	sy -= mCamY;
 	float tw = float(tileWidth >> 1);
 	float th = float(tileHeight >> 1);
 	wx = 0.5f * (sy / th + sx / tw) + 1.0f;
