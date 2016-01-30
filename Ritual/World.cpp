@@ -18,6 +18,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 2, "assets/tile_grass_flat2.png");
 	AddTile(renderer, 3, "assets/tile_concrete.png");
 	AddTile(renderer, 4, "assets/tile_grass.png");
+	AddTile(renderer, 6, "assets/tile_grass_flat_wall.png");
+	AddTile(renderer, 7, "assets/tile_grass_flat_wall_2.png");
+	AddTile(renderer, 8, "assets/tile_grass_flat_wall_3.png");
 	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
