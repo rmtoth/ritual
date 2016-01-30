@@ -1,5 +1,6 @@
 #pragma once
 #include "Ritual.h"
+#include "AudioManager.h"
 
 struct World {
 
@@ -61,7 +62,8 @@ struct World {
 
 	void ScreenToWorld(float &wx, float &wy, float sx, float sy);
 	void WorldToScreen(float &sx, float &sy, float wx, float wy);
-
+	
+	CAudioManager mAudioManager;
 
 };
 

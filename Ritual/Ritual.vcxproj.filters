@@ -35,6 +35,12 @@
     <ClInclude Include="Button.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="audio\bass.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -59,6 +65,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="navigation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

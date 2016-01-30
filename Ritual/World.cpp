@@ -13,6 +13,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	mCamX = 0.0f;
 	mCamY = 0.0f;
 
+	mAudioManager.Init();
+
 	AddTile(renderer, 0, "assets/tile_gravel.png");
 	AddTile(renderer, 1, "assets/tile_grass.png");
 	AddTile(renderer, 2, "assets/tile_grass_flat.png");
@@ -96,6 +98,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	mShadow = ImgToTex(renderer, "assets/shadow.png", mShadowW, mShadowH);
 
 	mDest = { 32, 32 };
+
 }
 
 World::~World()
@@ -150,7 +153,7 @@ void World::AddObject(SDL_Renderer *renderer, int i, string filename)
 
 void World::Draw(SDL_Renderer *renderer)
 {
-
+	mAudioManager.Update();
 	SDL_Rect srcrect;
 	SDL_Rect dstrect;
 
