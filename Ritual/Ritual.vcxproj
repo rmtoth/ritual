@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="navigation.cpp" />
     <ClCompile Include="Ritual.cpp" />
     <ClCompile Include="Scrub.cpp" />
     <ClCompile Include="simulation.cpp" />

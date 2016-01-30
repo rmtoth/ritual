@@ -52,5 +52,8 @@
     <ClCompile Include="Scrub.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="navigation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

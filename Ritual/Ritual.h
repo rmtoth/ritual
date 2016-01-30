@@ -41,12 +41,6 @@ struct f2 {
 struct unit;
 struct tower;
 
-struct interaction {
-	float t;
-	unit *unit;
-	tower *tower;
-};
-
 struct position {
 	float t;
 	int x, y;
@@ -61,7 +55,6 @@ struct position_transition {
 struct health {
 	float t;
 	float hp;
-	interaction *i; // What caused the change
 };
 
 struct span {
@@ -78,11 +71,16 @@ struct unit {
 	vector<health> hp;
 };
 
+struct shot {
+	float t;
+	int target;
+};
+
 struct tower {
 	span alive;
 	int x, y;
 	int type;
-	vector<interaction*> shots;
+	vector<shot> shots;
 };
 
 struct potential_field {
@@ -96,9 +94,21 @@ struct drawable {
 	float x, y;
 };
 
+//== Sim API ==
+void InitSim();
 void GetDrawables(float t, vector<drawable>&);
 bool BuildTower(float t, int x, int y, int type);
-void InitSim();
+// TODO: bool SellTower(float t, int x, int y);
+// TODO: bool EraseTower(float t, int x, int y);
+float GetGameOverTime();
+//==============
+
+//== Nav API ===
+void InitNav();
+position_transition GetPositionTransition(unit &u, float t);
+bool CreatePotentialField(float t);
+void RecomputePath(unit &u, float t);
+//==============
 
 extern vector<tower> g_towers;
 extern vector<unit> g_units;
