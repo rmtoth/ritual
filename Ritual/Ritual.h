@@ -6,10 +6,10 @@
 #include <list>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include <math.h>
 #include <limits>
-#include "Misc.h"
 
 using namespace std;
 
@@ -51,23 +51,29 @@ struct health {
 	interaction *i; // What caused the change
 };
 
+struct span {
+	float t0;
+	float t1;
+	bool operator()(float t) { return (t >= t0) && (t < t1); }
+	span(float _t0 = 0, float _t1 = inf) : t0(_t0), t1(_t1) {}
+};
+
 struct unit {
-	float spawntime;
-	float deathtime;
+	span alive;
 	vector<position> path;
 	vector<health> hp;
 };
 
 struct tower {
-	float spawntime;
+	span alive;
 	int x, y;
 	vector<interaction*> shots;
 };
 
 struct potential_field {
-	float t0, t1;
+	span alive;
 	int w, h;
-	int *next;
+	vector<int> next;
 };
 
 struct drawable {
@@ -80,3 +86,5 @@ void TestSim();
 
 extern vector<tower> g_towers;
 extern vector<unit> g_units;
+extern struct World *g_world;
+extern float *g_speedfield;

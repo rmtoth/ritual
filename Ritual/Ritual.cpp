@@ -5,7 +5,7 @@
 #include "Ritual.h"
 #include "World.h"
 
-World *world;
+World *g_world;
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 
 	bool quit = false;
 
-	world = new World(renderer, "assets/map.png");
+	g_world = new World(renderer, "assets/map.png");
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 		if (quit)
 			break;
 
-		world->Draw(renderer);
+		g_world->Draw(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
