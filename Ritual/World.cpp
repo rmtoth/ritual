@@ -18,6 +18,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
+	AddObject(renderer, 32, "assets/tile_spawn.png");
 	AddObject(renderer, 50, "assets/tower1.png");
 
 	u32 w, h;
@@ -248,9 +249,12 @@ bool World::MouseDown(SDL_Event &event)
 	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
 		return false;
 
-	BuildTower(0.0f, int(wx), int(wy), 0);
+	if (event.button.button == 1) {
+		BuildTower(0.0f, int(wx), int(wy), 0);
+		return true;
+	}
 
-	return true;
+	return false;
 }
 
 bool World::MouseMove(SDL_Event &event)
