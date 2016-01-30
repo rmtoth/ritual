@@ -8,6 +8,8 @@ static const int tileHeight = 32;
 
 static const int spawnPointColor = 32;
 
+SDL_Point attackCircle[10][65];
+
 World::World(SDL_Renderer *renderer, string filename)
 {
 	mCamX = 0.0f;
@@ -95,6 +97,18 @@ World::World(SDL_Renderer *renderer, string filename)
 
 	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
 	mShadow = ImgToTex(renderer, "assets/shadow.png", mShadowW, mShadowH);
+
+	for (int i = 0; i < 1; i++) {
+		for (int k = 0; k < 65; k++) {
+			float f = 2.0f * float(M_PI) * (k / 64.0f);
+			float fx = cosf(f);
+			float fy = sinf(f);
+			float ax, ay;
+			WorldToScreen(ax, ay, fx, fy);
+			attackCircle[i][k].x = int(ax + 0.5f);
+			attackCircle[i][k].y = int(ay + 0.5f);
+		}
+	}
 
 	mDest = { 32, 32 };
 }
@@ -216,7 +230,7 @@ void World::Draw(SDL_Renderer *renderer)
 		SDL_RenderDrawRect(renderer, &rect);
 		rect.x += 2;
 		rect.y += 2;
-		rect.w = int(32.0f * d.health + 0.999f);
+		rect.w = int(32.0f * d.health + 0.5f);
 		rect.w -= 4;
 		rect.h -= 4;
 		SDL_SetRenderDrawColor(renderer, 20, 180, 20, 255);
@@ -236,6 +250,28 @@ void World::DrawMarker(SDL_Renderer *renderer)
 	WorldToScreen(sx, sy, floor(wx + 0.5f), floor(wy + 0.5f));
 
 	RenderIsoSprite(renderer, *mMarker, int(sx), int(sy), mMarkerW, mMarkerH);
+
+	int ix = int(wx + 0.5f);
+	int iy = int(wy + 0.5f);
+
+	printf("%d\n", mTiles[ix + iy * mWidth]);
+
+	unitsToRender.clear();
+	GetDrawables(g_scrub->mTime, unitsToRender);
+
+	for (auto it : unitsToRender) {
+		int ax = int(it.x);
+		int ay = int(it.y);
+		if (ax == ix && ay == iy) {
+			if (it.sprite >= 50 && it.sprite <= 55) {
+				int i = it.sprite - 50;
+				SDL_RenderDrawLines(renderer, attackCircle[i], 64);
+				break;
+			}
+		}
+	}
+
+
 }
 
 
