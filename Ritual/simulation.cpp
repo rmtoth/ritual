@@ -143,7 +143,7 @@ bool BuildTower(float t, int x, int y, int type)
 	// Loop over towers, don't double-build
 	for (auto &u : g_towers)
 	{
-		if (u.alive.t1 > t)
+		if ((u.x == x) && (u.y == y) && (u.alive.t1 > t))
 			return false;
 	}
 	// Loop over units, make sure we don't stom anyone
