@@ -30,6 +30,14 @@ typedef unsigned	__int64		u64;
 typedef signed		long long	i64;
 typedef unsigned	long long	u64;
 
+struct i2 {
+	int x, y;
+};
+
+struct f2 {
+	float x, y;
+};
+
 struct unit;
 struct tower;
 
@@ -42,6 +50,12 @@ struct interaction {
 struct position {
 	float t;
 	int x, y;
+};
+
+struct position_transition {
+	int x0, y0;
+	int x1, y1;
+	float lerp;
 };
 
 struct health {
@@ -59,6 +73,7 @@ struct span {
 
 struct unit {
 	span alive;
+	int type;
 	vector<position> path;
 	vector<health> hp;
 };
@@ -66,6 +81,7 @@ struct unit {
 struct tower {
 	span alive;
 	int x, y;
+	int type;
 	vector<interaction*> shots;
 };
 
@@ -81,7 +97,8 @@ struct drawable {
 };
 
 void GetDrawables(float t, vector<drawable>&);
-void TestSim();
+bool BuildTower(float t, int x, int y, int type);
+void InitSim();
 
 extern vector<tower> g_towers;
 extern vector<unit> g_units;
