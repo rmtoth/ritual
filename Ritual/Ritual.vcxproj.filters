@@ -17,6 +17,9 @@
     <ClInclude Include="targetver.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="Misc.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -28,7 +31,7 @@
     <ClCompile Include="Ritual.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Misc.cpp">
+    <ClCompile Include="lodepng.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
