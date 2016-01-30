@@ -3,10 +3,9 @@
 #include "include\SDL.h"
 #include "lodepng.h"
 #include <vector>
-#include <hash_map>
-#include <hash_set>
 #include <list>
 #include <algorithm>
+#include "Misc.h"
 using namespace std;
 
 typedef float					f32;
@@ -54,3 +53,13 @@ struct tower {
 	int x, y;
 	vector<interaction*> shots;
 };
+
+struct drawable {
+	int sprite;
+	float x, y;
+};
+
+void GetDrawables(float t, vector<drawable>&);
+
+extern vector<tower> g_towers;
+extern vector<unit> g_units;
