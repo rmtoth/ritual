@@ -203,6 +203,7 @@ bool BuildTower(float t, int x, int y, int type)
 	if (!CreatePotentialField(t))
 	{
 		g_towers.pop_back();
+		RepairPotentialField(t);
 		return false;
 	}
 
