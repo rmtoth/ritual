@@ -92,6 +92,7 @@ struct potential_field {
 struct drawable {
 	int sprite;
 	float x, y;
+	float health = 0.0f;
 	int variation = 0;
 };
 
@@ -112,6 +113,22 @@ bool CreatePotentialField(float t);
 void RepairPotentialField(float t);
 void RecomputePath(unit &u, float t);
 //==============
+
+// TODO: Speed! use it! navigation
+static struct {
+	float speed;
+	float health;
+} unit_types[] = {
+	{ 1.0f, 100.0f },
+};
+
+static struct {
+	float period;
+	float range2;
+	float damage;
+} tower_types[] = {
+	{ 2.0f, 9.0f, 5.0f },
+};
 
 extern vector<tower> g_towers;
 extern vector<unit> g_units;

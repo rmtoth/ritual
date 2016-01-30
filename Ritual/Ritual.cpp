@@ -12,7 +12,9 @@ Scrub *g_scrub;
 
 const int nButtons = 5;
 Button *g_buttons[nButtons];
+Button *g_playpause[2];
 int selectedButton = 0;
+bool isPlaying = false;
 
 int main(int argc, char* argv[])
 {
@@ -27,6 +29,9 @@ int main(int argc, char* argv[])
 	g_scrub = new Scrub(renderer);
 	for (int i = 0; i < 5; i++)
 		g_buttons[i] = new Button(renderer, "assets/tower1.png", 100, 100 + i * 110, 100, 100);
+
+	g_playpause[0] = new Button(renderer, "assets/play.png", RES_X - 280, RES_Y - 200, 80, 80);
+	g_playpause[1] = new Button(renderer, "assets/pause.png", RES_X - 180, RES_Y - 200, 80, 80);
 
 	InitNav();
 	InitSim();
@@ -44,7 +49,7 @@ int main(int argc, char* argv[])
 		perfFreq = SDL_GetPerformanceFrequency();
 		nowTime = double(perfCnt) / double(perfFreq);
 		double ddeltatime = nowTime - lastTime;
-
+		ddeltatime = ddeltatime > 0.1 ? 0.1 : ddeltatime;
 		//printf("%f\n", ddeltatime);
 
 		SDL_Event event;
@@ -63,11 +68,26 @@ int main(int argc, char* argv[])
 			}
 			if (eatenByButton)
 				continue;
+			if (g_playpause[0]->Event(event)) {
+				isPlaying = true;
+				continue;
+			}
+			if (g_playpause[1]->Event(event)) {
+				isPlaying = false;
+				continue;
+			}
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+				isPlaying = !isPlaying;
+			}
 			if (g_scrub->Event(event)) continue;
 			if (g_world->Event(event)) continue;
 		}
 		if (quit)
 			break;
+
+		if (isPlaying) {
+			g_scrub->AdvanceTime(float(ddeltatime));
+		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
@@ -78,6 +98,8 @@ int main(int argc, char* argv[])
 		g_scrub->Draw(renderer);
 		for (int i = 0; i < nButtons; i++)
 			g_buttons[i]->Draw(renderer, i == selectedButton);
+		g_playpause[0]->Draw(renderer, isPlaying);
+		g_playpause[1]->Draw(renderer, !isPlaying);
 		SimDebugDraw(renderer, g_scrub->mTime);
 		SDL_RenderPresent(renderer);
 	}

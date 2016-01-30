@@ -4,13 +4,6 @@ vector<tower> g_towers;
 vector<unit> g_units;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
 
-static struct {
-	float period;
-	float range2;
-	float damage;
-} tower_types[] = {
-	{ 2.0f, 9.0f, 5.0f },
-};
 
 static bool health_finder(const health &h, float t)
 {
@@ -229,8 +222,9 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			drawable d;
 			d.sprite = 80 + u.type;
 			Interpolate(pt, d.x, d.y);
-			stuff.push_back(d);
 			float hp = GetHealth(u, t);
+			d.health = hp / unit_types[u.type].health;
+			stuff.push_back(d);
 			printf("Health: %f\n", hp);
 		}
 	}
@@ -242,6 +236,7 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			d.sprite = 50 + u.type;
 			d.x = (float)u.x;
 			d.y = (float)u.y;
+			d.health = 0.0f;
 			stuff.push_back(d);
 		}
 	}

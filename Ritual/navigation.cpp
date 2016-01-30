@@ -51,6 +51,11 @@ bool ComputePotentialField(float t, potential_field &pf)
 		blocked[x] = blocked[x + (pf.h - 1) * pf.w] = 1;
 	for (int y = 0; y < pf.h; ++y)
 		blocked[y*pf.w] = blocked[(y + 1) * pf.w - 1] = 1;
+	for (int i = 0; i < pf.w * pf.h; i++)
+		if (g_world->mWalkCost[i] == 0.0f)
+			blocked[i] = 1;
+
+
 	for (auto &tower : g_towers)
 	{
 		if (tower.alive(t))

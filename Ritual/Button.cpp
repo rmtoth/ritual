@@ -31,13 +31,19 @@ void Button::Draw(SDL_Renderer *renderer, bool selected)
 	}
 
 	SDL_Rect srcrect;
+	SDL_Rect dstrect;
 
 	srcrect.x = 0;
 	srcrect.y = 0;
 	srcrect.w = RES_X;
 	srcrect.h = RES_Y;
 
-	SDL_RenderCopy(renderer, mIcon, &srcrect, &mRect);
+	dstrect.x = mRect.x + ((mRect.w - mIconW) >> 1);
+	dstrect.y = mRect.y + ((mRect.h - mIconH) >> 1);
+	dstrect.w = mIconW;
+	dstrect.h = mIconH;
+
+	SDL_RenderCopy(renderer, mIcon, &srcrect, &dstrect);
 }
 
 bool Button::Event(SDL_Event &event)
