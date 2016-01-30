@@ -143,7 +143,7 @@ void SimulateUntil(float tend)
 	struct node {
 		float t;
 		tower *tower;
-		bool operator<(const node &rhs) const { return t < rhs.t; }
+		bool operator<(const node &rhs) const { return t > rhs.t; } // deliberate!
 	};
 	priority_queue<node> Q;
 	// Add each tower to queue
