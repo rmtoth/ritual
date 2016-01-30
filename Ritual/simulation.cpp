@@ -103,15 +103,15 @@ bool ComputePotentialField(float t, potential_field &pf)
 	return true;
 }
 
-potential_field* GetPotentialField(float t)
+list<potential_field>::iterator GetPotentialField(float t)
 {
-	for (auto &pf : g_potential_fields)
+	for (auto &it = g_potential_fields.begin(); it != g_potential_fields.end(); ++it)
 	{
-		if (t < pf.alive.t1)
-			return &pf;
+		if (t < it->alive.t1)
+			return it;
 	}
 	__debugbreak();
-	return nullptr;
+	return g_potential_fields.end();
 }
 
 // Path vector of u is valid but incomplete.
@@ -124,10 +124,10 @@ void FindRemainingPath(unit &u)
 		float t = initial.t;
 		int x = initial.x;
 		int y = initial.y;
-		potential_field *pf = GetPotentialField(t);
-		int w = pf->w;
-		int *next = &pf->next[0];
-		while (t < pf->alive.t1)
+		potential_field &pf = *GetPotentialField(t);
+		int w = pf.w;
+		int *next = &pf.next[0];
+		while (t < pf.alive.t1)
 		{
 			int cell = x + y * w;
 			int nextcell = next[cell];
@@ -200,4 +200,39 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			stuff.push_back(d);
 		}
 	}
+}
+
+bool BuildTower(float t, int x, int y, int type)
+{
+	// Loop over towers, don't double-build
+	for (auto &u : g_towers)
+	{
+		if (u.alive.t1 > t)
+			return false;
+	}
+	// Loop over units, make sure we don't stom anyone
+	for (auto &u : g_units)
+	{
+		auto pt = GetPositionTransition(u, t);
+		if ((pt.x0 == x) && (pt.y0 == y)) return false;
+		if ((pt.x1 == x) && (pt.y1 == y)) return false;
+	}
+	// Generate new potential field, make sure it doesn't complain
+	potential_field pf;
+	if (!ComputePotentialField(t, pf))
+		return false;
+	// Locate current potential field, split it at t
+	auto it = GetPotentialField(t);
+	pf.alive = span(t, it->alive.t1);
+	it->alive.t1 = t;
+	g_potential_fields.insert(++it, pf);
+	tower tw;
+	tw.alive = span(t);
+	tw.x = x;
+	tw.y = y;
+	tw.type = type;
+	g_towers.push_back(tw);
+	// TODO: For each unit, clear path from t and recompute it
+	// TODO: Recompute shots and health from t
+	return true;
 }
