@@ -204,8 +204,30 @@ bool CreatePotentialField(float t)
 	auto it = GetPotentialField(t);
 	pf.alive = span(t, it->alive.t1);
 	it->alive.t1 = t;
-	g_potential_fields.insert(++it, pf);
+	auto newit = g_potential_fields.insert(++it, pf);
+	while (it != g_potential_fields.end())
+	{
+		if (!ComputePotentialField(it->alive.t0, *it))
+		{
+			it = newit;
+			--it;
+			it->alive.t1 = newit->alive.t1;
+			g_potential_fields.erase(newit);
+			return false;
+		}
+		++it;
+	}
 	return true;
+}
+
+void RepairPotentialField(float t)
+{
+	auto it = GetPotentialField(t);
+	while (it != g_potential_fields.end())
+	{
+		ComputePotentialField(it->alive.t0, *it);
+		++it;
+	}
 }
 
 void InitNav()

@@ -110,6 +110,7 @@ void SimDebugDraw(SDL_Renderer*, float t);
 void InitNav();
 position_transition GetPositionTransition(unit &u, float t);
 bool CreatePotentialField(float t);
+void RepairPotentialField(float t);
 void RecomputePath(unit &u, float t);
 //==============
 
