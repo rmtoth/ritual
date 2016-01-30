@@ -3,6 +3,7 @@
 
 struct World {
 
+
 	float mCamX, mCamY;
 	int mMouseX, mMouseY;
 	SDL_Texture *mMarker;
@@ -13,11 +14,17 @@ struct World {
 		int mW, mH;
 	};
 
-	struct ObjecRender
+	/*
+	struct ObjectRender
 	{
 		TileType* mType;
 		SDL_Rect mRect;
 	};
+	*/
+	vector<drawable> objectsToRender;
+	vector<drawable> unitsToRender;
+	vector<drawable> doodadToRender;
+
 	unordered_map<int, TileType *> mTileTypes;
 	unordered_map<int, TileType *> mObjectTypes;
 
