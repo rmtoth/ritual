@@ -225,7 +225,6 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			float hp = GetHealth(u, t);
 			d.health = hp / unit_types[u.type].health;
 			stuff.push_back(d);
-			printf("Health: %f\n", hp);
 		}
 	}
 	for (auto &u : g_towers)
