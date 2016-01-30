@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommonConverters.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Ritual.h" />
