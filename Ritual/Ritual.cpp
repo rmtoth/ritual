@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < 5; i++)
 		g_buttons[i] = new Button(renderer, "assets/tower1.png", 100, 100 + i * 110, 100, 100);
 
+	InitNav();
 	InitSim();
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();

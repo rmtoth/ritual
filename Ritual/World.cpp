@@ -3,6 +3,8 @@
 static const int tileWidth = 64;
 static const int tileHeight = 32;
 
+static const int spawnPointColor = 32;
+
 World::World(SDL_Renderer *renderer, string filename)
 {
 	mCamX = 0.0f;
@@ -13,6 +15,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 2, "assets/tile_grass_flat.png");
 	AddTile(renderer, 3, "assets/tile_concrete.png");
 	AddTile(renderer, 4, "assets/tile_grass.png");
+	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
 	AddObject(renderer, 50, "assets/tower1.png");
@@ -49,6 +52,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	for (u32 i = 0; i < mWidth * mHeight; i++) 
 	{
 		u32 col = *((u32 *)&img[i * 4]) & 0x00FFFFFF;
+		ProcessObjectColor(col, i);
+
 		auto c = mPaletteMap.find(col);
 		if (c == mPaletteMap.end()) {
 			printf("Level color mismatch! (Color not in palette)");
@@ -78,14 +83,25 @@ World::World(SDL_Renderer *renderer, string filename)
 	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
 
 	mDest = { 32, 32 };
-	mSpawn.push_back({ 10, 10 });
-	mSpawn.push_back({ 20, 15 });
 }
 
 World::~World()
 {
 	delete [] mTiles;
 	delete[] mTileObjects;
+}
+
+void World::ProcessObjectColor(u32 col, u32 tileIndex)
+{
+	bool isSpawnPoint = (spawnPointColor == mPaletteMap[col]);
+	if (isSpawnPoint)
+	{
+		int x = tileIndex % mWidth;
+		int y = tileIndex / mWidth;
+
+		mSpawn.push_back({ x, y });
+	}
+
 }
 
 void World::AddTile(SDL_Renderer *renderer, int i, string filename)
