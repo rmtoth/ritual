@@ -62,6 +62,7 @@ struct World {
 	void ScreenToWorld(float &wx, float &wy, float sx, float sy);
 	void WorldToScreen(float &sx, float &sy, float wx, float wy);
 
+	void RenderIsoSprite(SDL_Renderer *renderer, SDL_Texture &tex, int x, int y, int w, int h);
 
 };
 

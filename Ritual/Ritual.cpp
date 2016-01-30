@@ -110,4 +110,3 @@ SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h)
 
 	return tex;
 }
-
