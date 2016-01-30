@@ -116,3 +116,4 @@ extern struct World *g_world;
 extern struct Scrub *g_scrub;
 
 SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h);
+

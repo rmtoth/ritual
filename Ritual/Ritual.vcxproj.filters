@@ -32,6 +32,9 @@
     <ClInclude Include="Scrub.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -50,6 +53,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Scrub.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="navigation.cpp">

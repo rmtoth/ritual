@@ -162,6 +162,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="CommonConverters.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Ritual.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="navigation.cpp" />
     <ClCompile Include="Ritual.cpp" />

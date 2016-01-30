@@ -11,13 +11,18 @@ Scrub::Scrub(SDL_Renderer *renderer)
 	mRect.y = RES_Y - 100;
 	mRect.w = RES_X - 200;
 	mRect.h = 56;
+
+	mClaimedMouse = false;
 }
 
 void Scrub::Draw(SDL_Renderer *renderer)
 {
-	SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_MOD);
+	SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
 	SDL_RenderFillRect(renderer, &mRect);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_RenderDrawRect(renderer, &mRect);
 
 	SDL_Rect srcrect;
 	SDL_Rect dstrect;
@@ -37,23 +42,20 @@ void Scrub::Draw(SDL_Renderer *renderer)
 
 bool Scrub::Event(SDL_Event &event)
 {
-	static bool claimedMouse = false;
-
 	if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == 1 &&
 		event.button.x >= mRect.x && event.button.y >= mRect.y &&
 		event.button.x <= mRect.x + mRect.w && event.button.y <= mRect.y + mRect.h)
 	{
-		claimedMouse = true;
+		mClaimedMouse = true;
 	} else if (event.type == SDL_MOUSEBUTTONUP)
-		claimedMouse = false;
-	else if (claimedMouse && event.type == SDL_MOUSEMOTION) {
+		mClaimedMouse = false;
+	else if (mClaimedMouse && event.type == SDL_MOUSEMOTION) {
 		mTime = float(event.motion.x - mRect.x) / float(mRect.w);
 		mTime = max(mTime, 0.0f);
 		mTime = min(mTime, 1.0f);
 	}
 
-
-	return claimedMouse;
+	return mClaimedMouse;
 }
 
 

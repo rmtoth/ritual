@@ -18,6 +18,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
+	AddObject(renderer, 50, "assets/tower1.png");
 
 	u32 w, h;
 	u8 *img;
@@ -54,9 +55,16 @@ World::World(SDL_Renderer *renderer, string filename)
 		ProcessObjectColor(col, i);
 
 		auto c = mPaletteMap.find(col);
-		if (c != mPaletteMap.end()) 
-		{
-			mTileObjects[i] = c->second;
+		if (c == mPaletteMap.end()) {
+			printf("Level color mismatch! (Color not in palette)");
+			exit(1);
+		}
+		if (c->second < 120) {
+			drawable d;
+			d.sprite = c->second;
+			d.x = float(i % mWidth);
+			d.y = float(i / mWidth);
+			objectsToRender.push_back(d);
 		}
 		
 	}
@@ -71,6 +79,8 @@ World::World(SDL_Renderer *renderer, string filename)
 		mWalkCost[i] = float(col) / 255.0f;
 	}
 	free(img);
+
+	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
 
 	mDest = { 32, 32 };
 }
@@ -136,23 +146,24 @@ void World::Draw(SDL_Renderer *renderer)
 	srcrect.w = RES_X;
 	srcrect.h = RES_Y;
 
-	//for (int y = mHeight - 1; y >= 0; y--) {
-	//for (int y = 3; y >= 0; y--) {
-
 	int camX = int(mCamX + 0.5f);
 	int camY = int(mCamY + 0.5f);
 
-	vector<ObjecRender> objectsToRender;
-	for (u32 y = 0; y < mHeight; y++) {
+	float fx, fy;
 
+	for (u32 y = 0; y < mHeight; y++) {
 		for (u32 x = 0; x < mWidth; x++) {
 
 			int i = y * mWidth + x;
 			int t = mTiles[i];
 			TileType *tt = mTileTypes.find(t)->second;
 
-			dstrect.x = camX + x * (tileWidth >> 1) - y * (tileWidth >> 1) + (tileWidth >> 1);
-			dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
+			//dstrect.x = camX + x * (tileWidth >> 1) - y * (tileWidth >> 1) + (tileWidth >> 1);
+			//dstrect.y = camY + x * (tileHeight >> 1) + y * (tileHeight >> 1) + (tileHeight >> 1);
+
+			WorldToScreen(fx, fy, float(x), float(y));
+			dstrect.x = int(fx) + camX;
+			dstrect.y = int(fy) + camY;
 			dstrect.w = tt->mW;
 			dstrect.h = tt->mH;
 
@@ -160,34 +171,60 @@ void World::Draw(SDL_Renderer *renderer)
 				continue;
 
 			SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
-			
-			int objectIndex = mTileObjects[i];
-			if (mObjectTypes.find(objectIndex) != mObjectTypes.end())
-			{
-				TileType *objectTileType = mObjectTypes.find(objectIndex)->second;
-				if (objectTileType)
-				{
-					ObjecRender renderObject;
-					renderObject.mRect = dstrect;
-					renderObject.mType = objectTileType;
-					objectsToRender.push_back(renderObject);
-				}
-			}
-
+		
 		}
 	}
 
-	for (ObjecRender& tile : objectsToRender)
+
+	unitsToRender.clear();
+	GetDrawables(0.0f, unitsToRender);
+
+	doodadToRender.clear();
+
+	doodadToRender.insert(doodadToRender.end(), unitsToRender.begin(), unitsToRender.end());
+	doodadToRender.insert(doodadToRender.end(), objectsToRender.begin(), objectsToRender.end());
+	
+	for (drawable& d : doodadToRender)
 	{
-		SDL_RenderCopy(renderer, tile.mType->mTex, &srcrect, &tile.mRect);
+		WorldToScreen(fx, fy, float(d.x), float(d.y));
+		dstrect.x = int(fx) + camX;
+		dstrect.y = int(fy) + camY;
+
+		TileType *tt = mObjectTypes[d.sprite];
+
+		dstrect.w = tt->mW;
+		dstrect.h = tt->mH;
+
+		SDL_RenderCopy(renderer, tt->mTex, &srcrect, &dstrect);
 	}
+	
 
 
 }
 
 void World::DrawMarker(SDL_Renderer *renderer)
 {
+	float wx, wy;
+	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
 
+	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
+		return;
+
+	SDL_Rect srcrect, dstrect;
+	srcrect.x = 0;
+	srcrect.y = 0;
+	srcrect.w = RES_X;
+	srcrect.h = RES_Y;
+
+	float sx, sy;
+	WorldToScreen(sx, sy, int(wx), int(wy));
+
+	dstrect.x = int(mCamX + sx + 0.5f);
+	dstrect.y = int(mCamY + sy + 0.5f);
+	dstrect.w = mMarkerW;
+	dstrect.h = mMarkerH;
+
+	SDL_RenderCopy(renderer, mMarker, &srcrect, &dstrect);
 }
 
 
@@ -205,7 +242,15 @@ bool World::Event(SDL_Event &event)
 
 bool World::MouseDown(SDL_Event &event)
 {
-	return false;
+	float wx, wy;
+	ScreenToWorld(wx, wy, float(mMouseX) - mCamX, float(mMouseY) - mCamY);
+
+	if (wx < 0 || wy < 0 || wx >= mWidth || wy >= mHeight)
+		return false;
+
+	BuildTower(0.0f, int(wx), int(wy), 0);
+
+	return true;
 }
 
 bool World::MouseMove(SDL_Event &event)
@@ -214,6 +259,9 @@ bool World::MouseMove(SDL_Event &event)
 		mCamX += event.motion.xrel;
 		mCamY += event.motion.yrel;
 	}
+	mMouseX = event.motion.x;
+	mMouseY = event.motion.y;
+
 	return true;
 }
 
@@ -222,3 +270,20 @@ bool World::MouseUp(SDL_Event &event)
 	return false;
 }
 
+void World::ScreenToWorld(float &wx, float &wy, float sx, float sy)
+{
+	float tw = float(tileWidth >> 1);
+	float th = float(tileHeight >> 1);
+	wx = 0.5f * (sy / th + sx / tw) + 1.0;
+	wy = 0.5f * (sy / th - sx / tw);
+}
+
+void World::WorldToScreen(float &sx, float &sy, float wx, float wy)
+{
+	float tw = float(tileWidth >> 1);
+	float th = float(tileHeight >> 1);
+	sx = wx * tw - wy * tw - tw;
+	sy = wx * th + wy * th - th;
+	//sx = wx * tw - wy * tw + tw;
+	//sy = wx * th + wy * th + th;
+}

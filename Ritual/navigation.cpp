@@ -149,7 +149,7 @@ void RecomputePath(unit &u, float t)
 {
 	// Find first node after t
 	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
-	auto hi = lo + 1;
+	//auto hi = lo + 1;
 	// Remove excessive nodes, leaving spawn point alone
 	if (lo != u.path.begin())
 		u.path.resize(lo - u.path.begin());

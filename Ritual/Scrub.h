@@ -12,6 +12,7 @@ struct Scrub {
 	int mMarkerW, mMarkerH;
 
 	float mTime;
+	bool mClaimedMouse;
 
 };
 
