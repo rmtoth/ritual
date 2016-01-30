@@ -33,6 +33,7 @@ struct World {
 	World(SDL_Renderer *renderer, string filename);
 	~World();
 
+	void ProcessObjectColor(u32 col, u32 tileIndex);
 	void AddTile(SDL_Renderer *renderer, int i, string filename);
 	void AddObject(SDL_Renderer *renderer, int i, string filename);
 

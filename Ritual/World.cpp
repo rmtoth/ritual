@@ -3,6 +3,8 @@
 static const int tileWidth = 64;
 static const int tileHeight = 32;
 
+static const int spawnPointColor = 32;
+
 World::World(SDL_Renderer *renderer, string filename)
 {
 	mCamX = 0.0f;
@@ -48,6 +50,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	for (u32 i = 0; i < mWidth * mHeight; i++) 
 	{
 		u32 col = *((u32 *)&img[i * 4]) & 0x00FFFFFF;
+		ProcessObjectColor(col, i);
+
 		auto c = mPaletteMap.find(col);
 		if (c != mPaletteMap.end()) 
 		{
@@ -76,6 +80,17 @@ World::~World()
 {
 	delete [] mTiles;
 	delete[] mTileObjects;
+}
+
+void World::ProcessObjectColor(u32 col, u32 tileIndex)
+{
+	bool isSpawnPoint = (spawnPointColor == mPaletteMap[col]);
+	if (isSpawnPoint)
+	{
+		int test = 0;
+		test++;
+	}
+
 }
 
 void World::AddTile(SDL_Renderer *renderer, int i, string filename)
