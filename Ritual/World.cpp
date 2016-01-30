@@ -99,6 +99,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	mShadow = ImgToTex(renderer, "assets/shadow.png", mShadowW, mShadowH);
 
 	mDest = { 32, 32 };
+
+	myAudioManager.PlaySound("assets/audio/music.mp3");
 }
 
 World::~World()
