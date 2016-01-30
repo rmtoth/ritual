@@ -12,7 +12,10 @@ struct Scrub {
 	int mMarkerW, mMarkerH;
 
 	float mTime;
+	float mSlider;
 	bool mClaimedMouse;
 
+	void SetSlider(float x);
+	void AdvanceTime(float x);
 };
 

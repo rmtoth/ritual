@@ -6,6 +6,7 @@ Scrub::Scrub(SDL_Renderer *renderer)
 {
 	mMarker = ImgToTex(renderer, "assets/marker.png", mMarkerW, mMarkerH);
 	mTime = 0.0f;
+	mSlider = 0.0f;
 
 	mRect.x = 100;
 	mRect.y = RES_Y - 100;
@@ -32,7 +33,7 @@ void Scrub::Draw(SDL_Renderer *renderer)
 	srcrect.w = RES_X;
 	srcrect.h = RES_Y;
 
-	dstrect.x = 100 + int(mTime * mRect.w + 0.5f) - (mMarkerW >> 1);
+	dstrect.x = 100 + int(mSlider * mRect.w + 0.5f) - (mMarkerW >> 1);
 	dstrect.y = RES_Y - 100 - 4;
 	dstrect.w = mMarkerW;
 	dstrect.h = mMarkerH;
@@ -50,12 +51,22 @@ bool Scrub::Event(SDL_Event &event)
 	} else if (event.type == SDL_MOUSEBUTTONUP)
 		mClaimedMouse = false;
 	else if (mClaimedMouse && event.type == SDL_MOUSEMOTION) {
-		mTime = float(event.motion.x - mRect.x) / float(mRect.w);
-		mTime = max(mTime, 0.0f);
-		mTime = min(mTime, 1.0f);
+		SetSlider(float(event.motion.x - mRect.x) / float(mRect.w));
 	}
 
 	return mClaimedMouse;
+}
+
+void Scrub::SetSlider(float x)
+{
+	mSlider = min(1.f, max(0.f, x));
+	mTime = mSlider * 60;
+}
+
+void Scrub::AdvanceTime(float x)
+{
+	mTime += x;
+	mSlider = min(1.f, max(0.f, mTime / 60));
 }
 
 
