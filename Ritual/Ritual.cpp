@@ -10,7 +10,7 @@
 World *g_world;
 Scrub *g_scrub;
 
-const int nButtons = 5;
+const int nButtons = 4;
 Button *g_buttons[nButtons];
 Button *g_playpause[2];
 int selectedButton = 0;
@@ -27,8 +27,11 @@ int main(int argc, char* argv[])
 
 	g_world = new World(renderer, "assets/map");
 	g_scrub = new Scrub(renderer);
-	for (int i = 0; i < 5; i++)
-		g_buttons[i] = new Button(renderer, "assets/tower1.png", 100, 100 + i * 110, 100, 100);
+	//for (int i = 0; i < 5; i++)
+	g_buttons[0] = new Button(renderer, "assets/tower1.png", 100, 100 + 0 * 110, 100, 100);
+	g_buttons[1] = new Button(renderer, "assets/tower2.png", 100, 100 + 1 * 110, 100, 100);
+	g_buttons[2] = new Button(renderer, "assets/tower3.png", 100, 100 + 2 * 110, 100, 100);
+	g_buttons[3] = new Button(renderer, "assets/tower4.png", 100, 100 + 3 * 110, 100, 100);
 
 	g_playpause[0] = new Button(renderer, "assets/play.png", RES_X - 280, RES_Y - 200, 80, 80);
 	g_playpause[1] = new Button(renderer, "assets/pause.png", RES_X - 180, RES_Y - 200, 80, 80);
