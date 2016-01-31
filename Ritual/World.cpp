@@ -115,7 +115,7 @@ World::World(SDL_Renderer *renderer, string filename)
 
 	mDest = { 32, 32 };
 
-	myAudioManager.PlaySound("assets/audio/music.mp3");
+	//myAudioManager.PlaySound("assets/audio/music.mp3");
 }
 
 World::~World()
