@@ -285,10 +285,10 @@ void World::DrawMarker(SDL_Renderer *renderer)
 }
 
 
-bool World::Event(SDL_Event &event)
+bool World::Event(SDL_Event &event, int selectedTower)
 {
 	switch (event.type) {
-	case SDL_MOUSEBUTTONDOWN: return MouseDown(event);
+	case SDL_MOUSEBUTTONDOWN: return MouseDown(event, selectedTower);
 	case SDL_MOUSEBUTTONUP: return MouseUp(event);
 	case SDL_MOUSEMOTION: return MouseMove(event);
 	}
@@ -297,7 +297,7 @@ bool World::Event(SDL_Event &event)
 
 
 
-bool World::MouseDown(SDL_Event &event)
+bool World::MouseDown(SDL_Event &event, int selectedTower)
 {
 	float wx, wy;
 	ScreenToWorld(wx, wy, float(mMouseX), float(mMouseY));
@@ -313,7 +313,13 @@ bool World::MouseDown(SDL_Event &event)
 	}
 
 	if (event.button.button == 1) {
- 		BuildTower(g_scrub->mTime, buildX, buildY, 0);
+		if (tower_types[selectedTower].cost > g_scrub->mTotalTime - g_scrub->mSpentTime)
+			return true;
+
+ 		bool didBuild = BuildTower(g_scrub->mTime, buildX, buildY, selectedTower);
+		if (didBuild) {
+			g_scrub->mSpentTime += tower_types[selectedTower].cost;
+		}
 		return true;
 	}
 

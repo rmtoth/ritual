@@ -55,8 +55,8 @@ struct World {
 	void Draw(SDL_Renderer *renderer);
 	void DrawMarker(SDL_Renderer *renderer);
 
-	bool Event(SDL_Event &event);
-	bool MouseDown(SDL_Event &event);
+	bool Event(SDL_Event &event, int selectedTower);
+	bool MouseDown(SDL_Event &event, int selectedTower);
 	bool MouseMove(SDL_Event &event);
 	bool MouseUp(SDL_Event &event);
 

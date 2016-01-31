@@ -1,4 +1,5 @@
 #include "Ritual.h"
+#include "Scrub.h"
 
 vector<tower> g_towers;
 vector<unit> g_units;
@@ -170,6 +171,9 @@ void SimulateUntil(float tend)
 // TODO: Remove future overlapping towers instead of bail
 bool BuildTower(float t, int x, int y, int type)
 {
+	if (t < g_scrub->mSpentTime)
+		return false;
+
 	// Loop over towers, don't double-build
 	for (auto &u : g_towers)
 	{
