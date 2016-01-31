@@ -16,6 +16,33 @@ Button *g_playpause[2];
 int selectedButton = 0;
 bool isPlaying = false;
 
+double nowTime;
+
+int errMsg = errNone;
+double errEndTime;
+
+SDL_Texture* errorTextures[numErrorMessages] = {};
+
+void ShowErrorMessage(ErrorMsg e)
+{
+	errMsg = e;
+	errEndTime = nowTime + 3.0;
+}
+
+void DrawErrorMessage(SDL_Renderer *r)
+{
+	if (errEndTime >= nowTime) errMsg = errNone;
+	if (errMsg == errNone) return;
+	double alpha = min(1.0, errEndTime - nowTime);
+
+	SDL_Rect rc;
+	SDL_Texture* tex = errorTextures[errMsg];
+	SDL_QueryTexture(tex, NULL, NULL, &rc.w, &rc.h);
+	rc.x = 800 - rc.w / 2;
+	rc.y = 450 - rc.h / 2;
+	SDL_RenderCopy(r, tex, nullptr, &rc);
+}
+
 int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -41,7 +68,7 @@ int main(int argc, char* argv[])
 
 	unsigned long long perfCnt = SDL_GetPerformanceCounter();
 	unsigned long long perfFreq = SDL_GetPerformanceFrequency();
-	double nowTime = double(perfCnt) / double(perfFreq);
+	nowTime = double(perfCnt) / double(perfFreq);
 
 	SDL_Surface *winSurf = SDL_GetWindowSurface(window);
 

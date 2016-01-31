@@ -39,7 +39,12 @@ static const struct {
 	{ +1, +1, 1.4f },
 };
 
-bool ComputePotentialField(float t, potential_field &pf)
+enum PotFieldErr {
+	potOK,
+	potUnit,
+	potSpawn
+};
+PotFieldErr ComputePotentialField(float t, potential_field &pf)
 {
 	pf.w = g_world->mWidth;
 	pf.h = g_world->mHeight;
@@ -54,7 +59,6 @@ bool ComputePotentialField(float t, potential_field &pf)
 	for (int i = 0; i < pf.w * pf.h; i++)
 		if (g_world->mWalkCost[i] == 0.0f)
 			blocked[i] = 1;
-
 
 	for (auto &tower : g_towers)
 	{
@@ -102,10 +106,10 @@ bool ComputePotentialField(float t, potential_field &pf)
 		position_transition pt = GetPositionTransition(u, t);
 		int cell = pt.x0 + pt.y0 * pf.w;
 		if (next[cell] == -1)
-			return false;
+			return potUnit;
 		cell = pt.x1 + pt.y1 * pf.w;
 		if (next[cell] == -1 && cell != initial_cell)
-			return false;
+			return potUnit;
 	}
 
 	// Validate that spawn points are not trapped
@@ -113,10 +117,10 @@ bool ComputePotentialField(float t, potential_field &pf)
 	{
 		int cell = p.x + p.y * pf.w;
 		if (next[cell] == -1)
-			return false;
+			return potSpawn;
 	}
 
-	return true;
+	return potOK;
 }
 
 list<potential_field>::iterator GetPotentialField(float t)
@@ -203,8 +207,17 @@ bool CreatePotentialField(float t)
 {
 	// Generate new potential field, make sure it doesn't complain
 	potential_field pf;
-	if (!ComputePotentialField(t, pf))
+	PotFieldErr err = ComputePotentialField(t, pf);
+	if (err == potSpawn)
+	{
+		ShowErrorMessage(errIsolateSpawnNow);
 		return false;
+	}
+	else if (err == potUnit)
+	{
+		ShowErrorMessage(errIsolateUnitNow);
+		return false;
+	}
 	// Locate current potential field, split it at t
 	auto it = GetPotentialField(t);
 	pf.alive = span(t, it->alive.t1);
@@ -212,8 +225,19 @@ bool CreatePotentialField(float t)
 	auto newit = g_potential_fields.insert(++it, pf);
 	while (it != g_potential_fields.end())
 	{
-		if (!ComputePotentialField(it->alive.t0, *it))
+		err = ComputePotentialField(it->alive.t0, *it);
+		if (err != potOK)
 		{
+			if (err == potSpawn)
+			{
+				ShowErrorMessage(errIsolateSpawnFuture);
+				return false;
+			}
+			else if (err == potUnit)
+			{
+				ShowErrorMessage(errIsolateUnitFuture);
+				return false;
+			}
 			it = newit;
 			--it;
 			it->alive.t1 = newit->alive.t1;
