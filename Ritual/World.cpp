@@ -10,6 +10,8 @@ static const int spawnPointColor = 32;
 
 SDL_Point attackCircle[10][65];
 
+World::TileType demon[3][3][8];
+
 World::World(SDL_Renderer *renderer, string filename)
 {
 	mCamX = 0.0f;
@@ -121,6 +123,21 @@ World::World(SDL_Renderer *renderer, string filename)
 		}
 	}
 
+	for (int sz = 0; sz < 3; sz++) {
+		for (int frame = 0; frame < 3; frame++) {
+			for (int rot = 0; rot < 8; rot++) {
+				char buf[1024];
+				sprintf(buf, "assets/demon%d_w%d_000%d.png", sz, frame, rot);
+
+				SDL_Texture *tex = ImgToTex(renderer, buf, demon[sz][frame][rot].mW, demon[sz][frame][rot].mH);
+				demon[sz][frame][rot].mTex = tex;
+			}
+
+		}
+
+	}
+
+
 	mDest = { 32, 32 };
 
 	//myAudioManager.PlaySound("assets/audio/music.mp3");
@@ -219,7 +236,15 @@ void World::Draw(SDL_Renderer *renderer)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
 
-		TileType *tt = mObjectTypes[d.sprite][d.variation];
+		//TileType *tt = mObjectTypes[d.sprite][d.variation];
+
+		TileType *tt;
+		if (d.sprite >= 80 && d.sprite < 90) {
+			int rot = d.variation % 8;
+			int frame = d.variation / 8;
+			tt = &demon[d.sprite - 80][frame][rot];
+		} else
+			tt = mObjectTypes[d.sprite][d.variation];
 
 		RenderIsoSprite(renderer, *mShadow, int(fx), int(fy), mShadowW, mShadowH);
 		RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
