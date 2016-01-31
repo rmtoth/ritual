@@ -360,11 +360,11 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			int dx = pt.x1 - pt.x0;
 			int dy = pt.y1 - pt.y0;
 			static const int dirtable[3][3] = {
-				0, 1, 2,
-				7, 0, 3,
-				6, 5, 4,
+				5, 6, 7,
+				4, 0, 0,
+				3, 2, 1,
 			};
-			int dir = (dirtable[dx + 1][dy + 1] - 3) % 8;
+			int dir = dirtable[dx + 1][dy + 1];
 			int frame = int(unit_types[u.type].animspeed * (t - u.alive.t0)) % 4;
 			static const int frametable[4] = { 0, 8, 0, 16 };
 			d.variation = frametable[frame] + dir;
