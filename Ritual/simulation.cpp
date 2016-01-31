@@ -413,3 +413,31 @@ void GetDrawables(float t, vector<drawable> &stuff)
 	}
 }
 
+void PlaySimulationSounds(float t0, float t1)
+{
+	{
+		auto it = lower_bound(g_preparticles.begin(), g_preparticles.end(), t0, postparticle_finder);
+		// it->t0 > t0.
+		while (it != g_preparticles.end())
+		{
+			// it->t0 < t1 ?
+			if (it->alive.t0 >= t1)
+				break;
+			PlaySimSound(it->type);
+			++it;
+		}
+	}
+	{
+		auto it = lower_bound(g_postparticles.begin(), g_postparticles.end(), t0, postparticle_finder);
+		// it->t0 > t0.
+		while (it != g_postparticles.end())
+		{
+			// it->t0 < t1 ?
+			if (it->alive.t0 >= t1)
+				break;
+			PlaySimSound(it->type);
+			++it;
+		}
+	}
+}
+
