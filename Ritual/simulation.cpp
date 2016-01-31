@@ -19,12 +19,13 @@ static bool shot_finder(const shot &s, float t)
 }
 
 // TODO: Unit types with corresponding health and speed
-void CreateUnit(position p)
+void CreateUnit(position p, int type)
 {
 	g_units.push_back({});
 	unit &u = g_units.back();
 	u.alive = span(p.t);
-	u.hp.push_back({ p.t, 100 });
+	u.type = type;
+	u.hp.push_back({ p.t, unit_types[type].health });
 	u.path.push_back(p);
 	RecomputePath(u, 0);
 }
@@ -47,7 +48,9 @@ void InitSim()
 {
 	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
 	for (auto it : g_world->mSpawn) {
-		CreateUnit({ 1, it.x, it.y });
+		CreateUnit({ 1, it.x, it.y }, 0);
+		CreateUnit({ 1, it.x, it.y }, 1);
+		CreateUnit({ 1, it.x, it.y }, 2);
 	}
 	//CreateUnit({ 1, 10, 10 });
 }
