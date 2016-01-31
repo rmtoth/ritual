@@ -5,6 +5,8 @@
 
 vector<tower> g_towers;
 vector<unit> g_units;
+vector<particle> g_preparticles;
+vector<particle> g_postparticles;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
 float g_game_over_time = inf;
 
@@ -16,6 +18,23 @@ static bool health_finder(const health &h, float t)
 static bool shot_finder(const shot &s, float t)
 {
 	return s.t < t;
+}
+
+static bool preparticle_finder(const particle &s, float t)
+{
+	return s.alive.t1 < t;
+}
+
+static bool postparticle_finder(const particle &s, float t)
+{
+	return s.alive.t0 < t;
+}
+
+void InterpolateParticle(const particle &p, float t, float &x, float &y)
+{
+	float s = (t - p.alive.t0) / (p.alive.t1 - p.alive.t0);
+	x = p.x0 + s * (p.x1 - p.x0);
+	y = p.y0 + s * (p.y1 - p.y0);
 }
 
 // TODO: Unit types with corresponding health and speed
@@ -103,6 +122,12 @@ void UnsimulateFrom(float t)
 		TruncateHealth(u, t);
 	for (auto &u : g_towers)
 		TruncateShots(u, t);
+	{
+		auto rm = lower_bound(g_preparticles.begin(), g_preparticles.end(), t, preparticle_finder);
+		g_preparticles.resize(rm - g_preparticles.begin());
+		rm = lower_bound(g_postparticles.begin(), g_postparticles.end(), t, postparticle_finder);
+		g_postparticles.resize(rm - g_postparticles.begin());
+	}
 	if (g_simulation_time > t)
 		g_simulation_time = t;
 }
@@ -212,11 +237,11 @@ void SimulateUntil(float tend)
 		if ((target != -1) && (d2 <= tt.range2))
 		{
 			n.tower->shots.push_back({ n.t, target });
+			auto pt = GetPositionTransition(g_units[target], n.t);
+			float x, y;
+			Interpolate(pt, x, y);
 			if (ty == 3)
 			{
-				auto pt = GetPositionTransition(g_units[target], n.t);
-				float x, y;
-				Interpolate(pt, x, y);
 				for (auto &u : g_units)
 				{
 					if (u.alive(n.t))
@@ -226,9 +251,39 @@ void SimulateUntil(float tend)
 							Damage(n.t, int(&u - &g_units[0]), tt.damage * dmg);
 					}
 				}
+				particle part;
+				part.alive = span(n.t, n.t + .1f);
+				part.x0 = x;
+				part.y0 = y;
+				part.type = 4;
+				part.x1 = x;
+				part.y1 = y;
+				g_postparticles.push_back(part);
+				//static const float PP[][2] = {
+				//	{ +1.0f, +0.0f },
+				//	{ -1.0f, +0.0f },
+				//	{ +0.0f, +1.0f },
+				//	{ +0.0f, -1.0f },
+				//};
+				//for (auto &P : PP)
+				//{
+				//	part.x1 = x + P[0];
+				//	part.y1 = y + P[1];
+				//	g_postparticles.push_back(part);
+				//}
 			}
 			else
+			{
 				Damage(n.t, target, tt.damage);
+			}
+			particle part;
+			part.alive = span(n.t - .1f, n.t);
+			part.x0 = float(n.tower->x);
+			part.y0 = float(n.tower->y);
+			part.x1 = x;
+			part.y1 = y;
+			part.type = ty;
+			g_preparticles.push_back(part);
 		}
 		n.t += tower_types[n.tower->type].period;
 		Q.push(n);
@@ -334,6 +389,32 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			d.x = (float)u.x;
 			d.y = (float)u.y;
 			d.health = 0.0f;
+			stuff.push_back(d);
+		}
+	}
+	{
+		auto it = lower_bound(g_preparticles.begin(), g_preparticles.end(), t, postparticle_finder);
+		while (it != g_preparticles.end())
+		{
+			if (!it->alive(t))
+				break;
+			drawable d;
+			d.sprite = 50;
+			InterpolateParticle(*it, t, d.x, d.y);
+			d.health = 0;
+			stuff.push_back(d);
+		}
+	}
+	{
+		auto it = lower_bound(g_postparticles.begin(), g_postparticles.end(), t, postparticle_finder);
+		while (it != g_postparticles.end())
+		{
+			if (!it->alive(t))
+				break;
+			drawable d;
+			d.sprite = 50;
+			InterpolateParticle(*it, t, d.x, d.y);
+			d.health = 0;
 			stuff.push_back(d);
 		}
 	}
