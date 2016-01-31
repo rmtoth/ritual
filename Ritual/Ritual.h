@@ -114,9 +114,8 @@ void RepairPotentialField(float t);
 void RecomputePath(unit &u, float t);
 //==============
 
-// TODO: Speed! use it! navigation
 static struct {
-	float speed;
+	float speed; // larger number is slower
 	float health;
 } unit_types[] = {
 	{ 1.0f, 100.0f },

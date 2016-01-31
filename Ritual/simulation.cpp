@@ -94,7 +94,6 @@ void Interpolate(position_transition &pt, float &x, float &y)
 	y = pt.y0 + (pt.y1 - pt.y0) * pt.lerp;
 }
 
-// TODO: implement this
 float FindClosest(float t, int x, int y, int *ui)
 {
 	float d2best = inf;
@@ -230,7 +229,6 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			float hp = GetHealth(u, t);
 			d.health = hp / unit_types[u.type].health;
 			stuff.push_back(d);
-			printf("Health: %f\n", hp);
 		}
 	}
 	for (auto &u : g_towers)

@@ -50,7 +50,6 @@ int main(int argc, char* argv[])
 		nowTime = double(perfCnt) / double(perfFreq);
 		double ddeltatime = nowTime - lastTime;
 		ddeltatime = ddeltatime > 0.1 ? 0.1 : ddeltatime;
-		//printf("%f\n", ddeltatime);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
