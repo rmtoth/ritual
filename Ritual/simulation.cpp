@@ -69,7 +69,7 @@ void InitSim()
 {
 	srand(0xBABEFACE);
 
-	float incr[3] = { 1.25f, 1.1f, 1.35f };
+	float incr[3] = { 1.35f, 1.2f, 1.55f };
 	float nUnits[3] = { 1.0f, 3.0f, 3.5f };
 
 	int nWaves = 10;
@@ -309,6 +309,8 @@ bool BuildTower(float t, int x, int y, int type)
 	// Loop over units, make sure we don't stom anyone
 	for (auto &u : g_units)
 	{
+		if (!u.alive(t))
+			continue;
 		auto pt = GetPositionTransition(u, t);
 		if (((pt.x0 == x) && (pt.y0 == y)) || ((pt.x1 == x) && (pt.y1 == y)))
 		{
