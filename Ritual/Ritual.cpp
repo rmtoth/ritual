@@ -272,5 +272,24 @@ SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h)
 void PlaySimSound(int type)
 {
 	// TODO!
+	if (type == 91)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 1.mp3");
+	}
+	if (type == 92)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 2.mp3");
+	}
+	if (type == 93)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 3.mp3");
+	}
+	if (type == 100)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 1.mp3");
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 2.mp3");
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 3.mp3");
+	}
+
 	printf("Sound %d!\n", type);
 }

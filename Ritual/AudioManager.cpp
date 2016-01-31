@@ -41,7 +41,7 @@ void CAudioManager::Update()
 				break;
 			}
 			BASS_StreamFree(stream);
-			myStreams.erase(stream);
+			iterator = myStreams.erase(iterator);
 		}
 		else
 		{
