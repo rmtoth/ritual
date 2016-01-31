@@ -153,7 +153,9 @@ int main(int argc, char* argv[])
 			g_buttons[i]->Draw(renderer, i == selectedButton);
 		g_playpause[0]->Draw(renderer, isPlaying);
 		g_playpause[1]->Draw(renderer, !isPlaying);
+#ifdef _DEBUG
 		SimDebugDraw(renderer, g_scrub->mTime);
+#endif
 
 		if (win) {
 			ShowErrorMessage(errWin);
