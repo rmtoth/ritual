@@ -144,7 +144,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	static int demonColorTint[3][3] = {
 		{ 0xFF, 0x60, 0x60 },
 		{ 0xFF, 0x90, 0x20 },
-		{ 0x30, 0x00, 0x00 },
+		{ 0xaa, 0x60, 0x40 },
 	};
 
 	for (int sz = 0; sz < 3; sz++) {
