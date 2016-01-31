@@ -1,12 +1,12 @@
 #include "Ritual.h"
 #include "World.h"
 #include "Scrub.h"
+#include <random>
 
 vector<tower> g_towers;
 vector<unit> g_units;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
 float g_game_over_time = inf;
-
 
 static bool health_finder(const health &h, float t)
 {
@@ -46,13 +46,32 @@ void SpawnTimeInterval(float t0, float t1)
 // TODO: Remove test unit
 void InitSim()
 {
-	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
-	for (auto it : g_world->mSpawn) {
-		CreateUnit({ 1, it.x, it.y }, 0);
-		CreateUnit({ 1, it.x, it.y }, 1);
-		CreateUnit({ 1, it.x, it.y }, 2);
+	srand(0xBABEFACE);
+
+	float incr[3] = { 1.25f, 1.1f, 1.3f };
+	float nUnits[3] = { 1.0f, 3.0f, 3.5f };
+
+	int nWaves = 10;
+
+	for (int wave = 0; wave < nWaves; wave++) {
+		float t0 = 1.0f + 0.8f * (wave / float(nWaves)) * g_scrub->mTotalTime;
+		float t1 = 1.0f + 0.8f * ((wave + 1) / float(nWaves)) * g_scrub->mTotalTime;
+		t1 = t0 + (t1 - t0) * 0.2f;
+		for (auto it : g_world->mSpawn) {
+			for (int a = 0; a < 3; a++) {
+
+				int u = int(nUnits[a]);
+				for (int k = 0; k < u; k++) {
+					float t = t0 + (t1 - t0) * (float(rand()) / float(RAND_MAX));
+					CreateUnit({ t, it.x, it.y }, a);
+				}
+
+				nUnits[a] *= incr[a];
+			}
+			
+		}
+
 	}
-	//CreateUnit({ 1, 10, 10 });
 }
 
 void TruncateHealth(unit &u, float t)
@@ -134,6 +153,20 @@ float FindClosest(float t, int x, int y, int *ui)
 	return d2best;
 }
 
+void ComputeDieTime()
+{
+	g_game_over_time = inf;
+	for (auto &u : g_units)
+	{
+		float tdie = u.path.back().t;
+		if (u.alive(tdie))
+		{
+			if (tdie < g_game_over_time)
+				g_game_over_time = tdie;
+		}
+	}
+}
+
 // TODO: End condition
 void SimulateUntil(float tend)
 {
@@ -146,6 +179,7 @@ void SimulateUntil(float tend)
 	if (g_towers.empty())
 	{
 		g_simulation_time = tend;
+		ComputeDieTime();
 		return;
 	}
 
@@ -199,17 +233,7 @@ void SimulateUntil(float tend)
 		n.t += tower_types[n.tower->type].period;
 		Q.push(n);
 	}
-
-	g_game_over_time = inf;
-	for (auto &u : g_units)
-	{
-		float tdie = u.path.back().t;
-		if (u.alive(tdie))
-		{
-			if (tdie < g_game_over_time)
-				g_game_over_time = tdie;
-		}
-	}
+	ComputeDieTime();
 }
 
 float GetGameOverTime()

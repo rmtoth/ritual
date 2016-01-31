@@ -7,6 +7,8 @@ Scrub::Scrub(SDL_Renderer *renderer)
 	mTime = 0.0f;
 	mSlider = 0.0f;
 
+	mEndMarker = ImgToTex(renderer, "assets/endmarker.png", mEndMarkerW, mEndMarkerH);
+
 	mRect.x = 100;
 	mRect.y = RES_Y - 100;
 	mRect.w = RES_X - 200;
@@ -53,6 +55,17 @@ void Scrub::Draw(SDL_Renderer *renderer, int selectedTower, float time)
 	dstrect.h = mMarkerH;
 
 	SDL_RenderCopy(renderer, mMarker, &srcrect, &dstrect);
+
+	float end = GetGameOverTime() / mTotalTime;
+
+	if (end <= 1.0f) {
+		dstrect.x = 100 + int(end * mRect.w + 0.5f) - (mEndMarkerW >> 1);
+		dstrect.y = RES_Y - 100 - 4;
+		dstrect.w = mEndMarkerW;
+		dstrect.h = mEndMarkerH;
+		SDL_RenderCopy(renderer, mEndMarker, &srcrect, &dstrect);
+	}
+
 }
 
 bool Scrub::Event(SDL_Event &event)
