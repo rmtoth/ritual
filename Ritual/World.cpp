@@ -35,6 +35,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 5, "assets/tile_tree3.png");
 	AddObject(renderer, 5, "assets/tile_tree4.png");
 	AddObject(renderer, 32, "assets/tile_spawn.png");
+	AddObject(renderer, 33, "assets/tile_end.png");
 
 	AddObject(renderer, 50, "assets/tower3.png");
 	AddObject(renderer, 51, "assets/tower2.png");
@@ -147,7 +148,7 @@ World::World(SDL_Renderer *renderer, string filename)
 
 	mDest = { 32, 32 };
 
-	//myAudioManager.PlaySound("assets/audio/music.mp3");
+	myAudioManager.PlaySound("assets/audio/TimeScrub.mp3");
 }
 
 World::~World()
