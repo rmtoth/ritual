@@ -103,6 +103,16 @@ void Interpolate(position_transition &pt, float &x, float &y)
 	y = pt.y0 + (pt.y1 - pt.y0) * pt.lerp;
 }
 
+float Distance2(float t, unit &u, float x0, float y0)
+{
+	float ux, uy;
+	auto pt = GetPositionTransition(u, t);
+	Interpolate(pt, ux, uy);
+	float dx = ux - x0;
+	float dy = uy - y0;
+	return dx * dx + dy * dy;
+}
+
 float FindClosest(float t, int x, int y, int *ui)
 {
 	float d2best = inf;
@@ -113,12 +123,7 @@ float FindClosest(float t, int x, int y, int *ui)
 	{
 		if (!u.alive(t))
 			continue;
-		float ux, uy;
-		auto pt = GetPositionTransition(u, t);
-		Interpolate(pt, ux, uy);
-		float dx = ux - x0;
-		float dy = uy - y0;
-		float d2 = dx * dx + dy * dy;
+		float d2 = Distance2(t, u, x0, y0);
 		if (d2best > d2)
 		{
 			d2best = d2;
@@ -132,6 +137,9 @@ float FindClosest(float t, int x, int y, int *ui)
 // TODO: End condition
 void SimulateUntil(float tend)
 {
+	if (tend <= g_simulation_time)
+		return;
+
 	// Create new units, will also compute their full path
 	SpawnTimeInterval(g_simulation_time, tend);
 
@@ -163,13 +171,30 @@ void SimulateUntil(float tend)
 		node n = Q.top();
 		Q.pop();
 		g_simulation_time = n.t;
-		auto &tt = tower_types[n.tower->type];
+		int ty = n.tower->type;
+		auto &tt = tower_types[ty];
 		int target = -1;
 		float d2 = FindClosest(n.t, n.tower->x, n.tower->y, &target);
 		if ((target != -1) && (d2 <= tt.range2))
 		{
 			n.tower->shots.push_back({ n.t, target });
-			Damage(n.t, target, tt.damage);
+			if (ty == 3)
+			{
+				auto pt = GetPositionTransition(g_units[target], n.t);
+				float x, y;
+				Interpolate(pt, x, y);
+				for (auto &u : g_units)
+				{
+					if (u.alive(n.t))
+					{
+						float dmg = 1 - Distance2(n.t, u, x, y)/4;
+						if (dmg > 0)
+							Damage(n.t, int(&u - &g_units[0]), tt.damage * dmg);
+					}
+				}
+			}
+			else
+				Damage(n.t, target, tt.damage);
 		}
 		n.t += tower_types[n.tower->type].period;
 		Q.push(n);
@@ -189,6 +214,7 @@ void SimulateUntil(float tend)
 
 float GetGameOverTime()
 {
+	SimulateUntil(g_scrub->mTotalTime);
 	return g_game_over_time;
 }
 
@@ -241,8 +267,7 @@ bool BuildTower(float t, int x, int y, int type)
 // TODO: Projectiles!
 void GetDrawables(float t, vector<drawable> &stuff)
 {
-	if (t >= g_simulation_time)
-		SimulateUntil(t + 10);
+	SimulateUntil(g_scrub->mTotalTime);
 	for (auto &u : g_units)
 	{
 		if (u.alive(t))
