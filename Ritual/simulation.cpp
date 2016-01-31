@@ -1,4 +1,6 @@
 #include "Ritual.h"
+#include "World.h"
+#include "Scrub.h"
 
 vector<tower> g_towers;
 vector<unit> g_units;
@@ -42,7 +44,11 @@ void SpawnTimeInterval(float t0, float t1)
 // TODO: Remove test unit
 void InitSim()
 {
-	CreateUnit({ 1, 10, 10 });
+	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
+	for (auto it : g_world->mSpawn) {
+		CreateUnit({ 1, it.x, it.y });
+	}
+	//CreateUnit({ 1, 10, 10 });
 }
 
 void TruncateHealth(unit &u, float t)
@@ -169,6 +175,9 @@ void SimulateUntil(float tend)
 // TODO: Remove future overlapping towers instead of bail
 bool BuildTower(float t, int x, int y, int type)
 {
+	if (t < g_scrub->mSpentTime)
+		return false;
+
 	// Loop over towers, don't double-build
 	for (auto &u : g_towers)
 	{
