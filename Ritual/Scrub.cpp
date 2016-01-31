@@ -88,7 +88,7 @@ bool Scrub::Event(SDL_Event &event)
 		SetSlider(float(event.motion.x - mRect.x) / float(mRect.w));
 
 
-		mWorld->myAudioManager.SetVolume(mWorld->mScrubSoundID, 0.5f);
+		mWorld->myAudioManager.SetVolume(mWorld->mScrubSoundID, 0.3f);
 
 	}
 

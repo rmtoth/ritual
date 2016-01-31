@@ -135,9 +135,9 @@ int main(int argc, char* argv[])
 	g_scrub = new Scrub(renderer, g_world);
 	//for (int i = 0; i < 5; i++)
 	g_buttons[0] = new Button(renderer, "assets/tower3.png", 100, 100 + 0 * 110, 100, 100);
-	g_buttons[1] = new Button(renderer, "assets/tower2.png", 100, 100 + 1 * 110, 100, 100);
-	g_buttons[2] = new Button(renderer, "assets/tower1.png", 100, 100 + 2 * 110, 100, 100);
-	g_buttons[3] = new Button(renderer, "assets/tower4.png", 100, 100 + 3 * 110, 100, 100);
+	g_buttons[1] = new Button(renderer, "assets/tower1_icon.png", 100, 100 + 1 * 110, 100, 100);
+	g_buttons[2] = new Button(renderer, "assets/tower2_icon.png", 100, 100 + 2 * 110, 100, 100);
+	g_buttons[3] = new Button(renderer, "assets/tower4_icon.png", 100, 100 + 3 * 110, 100, 100);
 
 	g_playpause[0] = new Button(renderer, "assets/play.png", RES_X - 280, RES_Y - 200, 80, 80);
 	g_playpause[1] = new Button(renderer, "assets/pause.png", RES_X - 180, RES_Y - 200, 80, 80);
@@ -212,7 +212,9 @@ int main(int argc, char* argv[])
 			g_buttons[i]->Draw(renderer, i == selectedButton);
 		g_playpause[0]->Draw(renderer, isPlaying);
 		g_playpause[1]->Draw(renderer, !isPlaying);
+#ifdef _DEBUG
 		SimDebugDraw(renderer, g_scrub->mTime);
+#endif
 
 		if (win) {
 			ShowErrorMessage(errWin);

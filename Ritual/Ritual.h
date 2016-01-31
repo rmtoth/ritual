@@ -76,6 +76,13 @@ struct shot {
 	int target;
 };
 
+struct particle {
+	span alive;
+	float x0, y0;
+	float x1, y1;
+	int type;
+};
+
 struct tower {
 	span alive;
 	int x, y;
