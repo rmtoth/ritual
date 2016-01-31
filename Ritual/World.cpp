@@ -101,7 +101,12 @@ World::World(SDL_Renderer *renderer, string filename)
 			d.y = float(i / mWidth);
 			d.variation = rand() % mObjectTypes[d.sprite].size();
 			d.health = 0.0f;
-			mWalkCost[i] = d.sprite == spawnPointColor ? mWalkCost[i] : 0;
+			if (d.sprite >= 30 && d.sprite < 50) {
+
+			}
+			else {
+				mWalkCost[i] = 0;
+			}
 			objectsToRender.push_back(d);
 		}
 

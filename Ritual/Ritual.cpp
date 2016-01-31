@@ -21,26 +21,35 @@ double nowTime;
 int errMsg = errNone;
 double errEndTime;
 
-SDL_Texture* errorTextures[numErrorMessages] = {};
+SDL_Texture* errorTextures[numErrorMessages];
 
 void ShowErrorMessage(ErrorMsg e)
 {
 	errMsg = e;
-	errEndTime = nowTime + 3.0;
+	errEndTime = nowTime + 2.0f;
 }
 
 void DrawErrorMessage(SDL_Renderer *r)
 {
-	if (errEndTime >= nowTime) errMsg = errNone;
+	if (errEndTime <= nowTime) errMsg = errNone;
 	if (errMsg == errNone) return;
 	double alpha = min(1.0, errEndTime - nowTime);
 
 	SDL_Rect rc;
 	SDL_Texture* tex = errorTextures[errMsg];
 	SDL_QueryTexture(tex, NULL, NULL, &rc.w, &rc.h);
+	rc.w /= 2;
+	rc.h /= 2;
+
 	rc.x = 800 - rc.w / 2;
 	rc.y = 450 - rc.h / 2;
+
 	SDL_RenderCopy(r, tex, nullptr, &rc);
+
+	SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_ADD);
+	SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
+	SDL_RenderDrawRect(r, &rc);
+
 }
 
 int main(int argc, char* argv[])
@@ -49,6 +58,17 @@ int main(int argc, char* argv[])
 
 	SDL_Window *window = SDL_CreateWindow("Ritual", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, RES_X, RES_Y, 0);
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+	int ww, hh;
+	errorTextures[0] = ImgToTex(renderer, "assets/error1.png", ww, hh);
+	errorTextures[1] = ImgToTex(renderer, "assets/error1.png", ww, hh);
+	errorTextures[2] = ImgToTex(renderer, "assets/error2.png", ww, hh);
+	errorTextures[3] = ImgToTex(renderer, "assets/error3.png", ww, hh);
+	errorTextures[4] = ImgToTex(renderer, "assets/error4.png", ww, hh);
+	errorTextures[5] = ImgToTex(renderer, "assets/error5.png", ww, hh);
+	errorTextures[6] = ImgToTex(renderer, "assets/error6.png", ww, hh);
+	errorTextures[7] = ImgToTex(renderer, "assets/error7.png", ww, hh);
+	errorTextures[8] = ImgToTex(renderer, "assets/error8.png", ww, hh);
 
 	bool quit = false;
 
@@ -71,6 +91,8 @@ int main(int argc, char* argv[])
 	nowTime = double(perfCnt) / double(perfFreq);
 
 	SDL_Surface *winSurf = SDL_GetWindowSurface(window);
+
+	bool win = false;
 
 	for (;;) {
 
@@ -109,7 +131,9 @@ int main(int argc, char* argv[])
 				isPlaying = !isPlaying;
 			}
 			if (g_scrub->Event(event)) continue;
-			if (g_world->Event(event, selectedButton)) continue;
+			if (!win) {
+				if (g_world->Event(event, selectedButton)) continue;
+			}
 		}
 		if (quit)
 			break;
@@ -130,6 +154,17 @@ int main(int argc, char* argv[])
 		g_playpause[0]->Draw(renderer, isPlaying);
 		g_playpause[1]->Draw(renderer, !isPlaying);
 		SimDebugDraw(renderer, g_scrub->mTime);
+
+		if (win) {
+			ShowErrorMessage(errWin);
+		}
+		else {
+			if (GetGameOverTime() / g_scrub->mTotalTime >= 1.0f)
+				win = true;
+		}
+
+		DrawErrorMessage(renderer);
+
 		SDL_RenderPresent(renderer);
 	}
 

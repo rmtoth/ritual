@@ -150,6 +150,7 @@ enum ErrorMsg {
 	errIsolateSpawnFuture,
 	errIsolateUnitNow,
 	errIsolateUnitFuture,
+	errWin,
 	numErrorMessages
 };
 void ShowErrorMessage(ErrorMsg);
