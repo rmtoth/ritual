@@ -57,18 +57,18 @@ void InitSim()
 		float t0 = 1.0f + 0.8f * (wave / float(nWaves)) * g_scrub->mTotalTime;
 		float t1 = 1.0f + 0.8f * ((wave + 1) / float(nWaves)) * g_scrub->mTotalTime;
 		t1 = t0 + (t1 - t0) * 0.2f;
-		for (auto it : g_world->mSpawn) {
-			for (int a = 0; a < 3; a++) {
 
-				int u = int(nUnits[a]);
+		for (int a = 0; a < 3; a++) {
+
+			for (auto it : g_world->mSpawn) {
+				int u = int(nUnits[a] / g_world->mSpawn.size());
 				for (int k = 0; k < u; k++) {
 					float t = t0 + (t1 - t0) * (float(rand()) / float(RAND_MAX));
 					CreateUnit({ t, it.x, it.y }, a);
 				}
 
-				nUnits[a] *= incr[a];
 			}
-			
+			nUnits[a] *= incr[a];
 		}
 
 	}
