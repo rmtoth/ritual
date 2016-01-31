@@ -33,7 +33,13 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 5, "assets/tile_tree3.png");
 	AddObject(renderer, 5, "assets/tile_tree4.png");
 	AddObject(renderer, 32, "assets/tile_spawn.png");
+
 	AddObject(renderer, 50, "assets/tower1.png");
+	AddObject(renderer, 51, "assets/tower2.png");
+	AddObject(renderer, 52, "assets/tower3.png");
+	AddObject(renderer, 53, "assets/tower4.png");
+
+
 	AddObject(renderer, 80, "assets/tower1.png");
 	AddObject(renderer, 10, "assets/tile_rock_big.png");
 
