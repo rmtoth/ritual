@@ -110,7 +110,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	mMarker = ImgToTex(renderer, "assets/tile_marker.png", mMarkerW, mMarkerH);
 	mShadow = ImgToTex(renderer, "assets/shadow.png", mShadowW, mShadowH);
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 4; i++) {
 		float r = sqrtf(tower_types[i].range2);
 		for (int k = 0; k < 65; k++) {
 			float f = 2.0f * float(M_PI) * (k / 64.0f);
@@ -123,6 +123,12 @@ World::World(SDL_Renderer *renderer, string filename)
 		}
 	}
 
+	static int demonColorTint[3][3] = {
+		{ 0xFF, 0x60, 0x60 },
+		{ 0xFF, 0x90, 0x20 },
+		{ 0x30, 0x00, 0x00 },
+	};
+
 	for (int sz = 0; sz < 3; sz++) {
 		for (int frame = 0; frame < 3; frame++) {
 			for (int rot = 0; rot < 8; rot++) {
@@ -130,6 +136,7 @@ World::World(SDL_Renderer *renderer, string filename)
 				sprintf(buf, "assets/demon%d_w%d_000%d.png", sz, frame, rot);
 
 				SDL_Texture *tex = ImgToTex(renderer, buf, demon[sz][frame][rot].mW, demon[sz][frame][rot].mH);
+				SDL_SetTextureColorMod(tex, demonColorTint[sz][0], demonColorTint[sz][1], demonColorTint[sz][2]);
 				demon[sz][frame][rot].mTex = tex;
 			}
 
@@ -227,6 +234,8 @@ void World::Draw(SDL_Renderer *renderer)
 	
 	struct sorter_ {
 		bool operator() (drawable &i, drawable &j) {
+			if (i.y == j.y)
+				return (i.x < j.x);
 			return (i.y<j.y);
 		}
 	} sorter;
@@ -299,7 +308,7 @@ void World::DrawMarker(SDL_Renderer *renderer)
 		int ax = int(it.x);
 		int ay = int(it.y);
 		if (ax == ix && ay == iy) {
-			if (it.sprite >= 50 && it.sprite <= 55) {
+			if (it.sprite >= 50 && it.sprite < 60) {
 				int i = it.sprite - 50;
 				SDL_Point ac[65];
 				memcpy(ac, attackCircle[i], sizeof(SDL_Point) * 65);

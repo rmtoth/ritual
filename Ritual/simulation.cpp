@@ -57,6 +57,7 @@ void InitSim()
 		float t0 = 1.0f + 0.8f * (wave / float(nWaves)) * g_scrub->mTotalTime;
 		float t1 = 1.0f + 0.8f * ((wave + 1) / float(nWaves)) * g_scrub->mTotalTime;
 		t1 = t0 + (t1 - t0) * 0.2f;
+
 		for (auto it : g_world->mSpawn) {
 			for (int a = 0; a < 3; a++) {
 
