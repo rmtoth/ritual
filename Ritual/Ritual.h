@@ -126,9 +126,9 @@ static struct {
 	float health;
 	float animspeed;
 } unit_types[] = {
-	{ 1.0f, 100.0f, 3.0f }, // slow
+	{ 1.2f, 200.0f, 2.5f }, // slow
 	{ 0.5f, 25.0f, 5.0f }, // med
-	{ 0.25f, 5.0f, 10.0f }, // fast
+	{ 0.2f, 5.0f, 12.0f }, // fast
 };
 
 static struct {
@@ -137,10 +137,10 @@ static struct {
 	float damage;
 	float cost;
 } tower_types[] = {
-	{ inf, 0.0f, 0.0f, 2.0f }, // TOWER 1
-	{ 2.0f, 9.0f, 5.0f, 5.0f }, // TOWER 2
-	{ 3.0f, 12.0f, 15.0f, 10.0f }, // TOWER 3
-	{ 2.0f, 20.0f, 50.0f, 25.0f }, // TOWER 4
+	{ inf, 0.0f, 0.0f, 1.0f }, // TOWER 1
+	{ 0.9f, 9.0f, 5.0f, 2.0f }, // TOWER 2
+	{ 2.0f, 16.0f, 15.0f, 7.0f }, // TOWER 3
+	{ 3.0f, 9.0f, 50.0f, 20.0f }, // TOWER 4
 };
 
 extern vector<tower> g_towers;
