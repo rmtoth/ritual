@@ -6,6 +6,7 @@
 vector<tower> g_towers;
 vector<unit> g_units;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
+float g_game_over_time = inf;
 
 static bool health_finder(const health &h, float t)
 {
@@ -192,6 +193,22 @@ void SimulateUntil(float tend)
 		n.t += tower_types[n.tower->type].period;
 		Q.push(n);
 	}
+
+	g_game_over_time = inf;
+	for (auto &u : g_units)
+	{
+		float tdie = u.path.back().t;
+		if (u.alive(tdie))
+		{
+			if (tdie < g_game_over_time)
+				g_game_over_time = tdie;
+		}
+	}
+}
+
+float GetGameOverTime()
+{
+	return g_game_over_time;
 }
 
 // TODO: Remove future overlapping towers instead of bail
