@@ -7,6 +7,7 @@ vector<unit> g_units;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
 
 
+
 static bool health_finder(const health &h, float t)
 {
 	return h.t < t;

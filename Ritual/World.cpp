@@ -10,6 +10,8 @@ static const int spawnPointColor = 32;
 
 SDL_Point attackCircle[10][65];
 
+World::TileType demon[3][3][8];
+
 World::World(SDL_Renderer *renderer, string filename)
 {
 	mCamX = 0.0f;
@@ -113,6 +115,21 @@ World::World(SDL_Renderer *renderer, string filename)
 		}
 	}
 
+	for (int sz = 0; sz < 3; sz++) {
+		for (int frame = 0; frame < 3; frame++) {
+			for (int rot = 0; rot < 8; rot++) {
+				char buf[1024];
+				sprintf(buf, "assets/demon%d_w%d_000%d.png", sz, frame, rot);
+
+				SDL_Texture *tex = ImgToTex(renderer, buf, demon[sz][frame][rot].mW, demon[sz][frame][rot].mH);
+				demon[sz][frame][rot].mTex = tex;
+			}
+
+		}
+
+	}
+
+
 	mDest = { 32, 32 };
 
 	//myAudioManager.PlaySound("assets/audio/music.mp3");
@@ -214,6 +231,9 @@ void World::Draw(SDL_Renderer *renderer)
 		TileType *tt = mObjectTypes[d.sprite][d.variation];
 
 		RenderIsoSprite(renderer, *mShadow, int(fx), int(fy), mShadowW, mShadowH);
+
+
+
 		RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
 	}
 	
