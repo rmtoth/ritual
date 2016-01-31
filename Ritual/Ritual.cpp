@@ -198,7 +198,10 @@ int main(int argc, char* argv[])
 			break;
 
 		if (isPlaying) {
+			float t0 = g_scrub->mTime;
 			g_scrub->AdvanceTime(float(ddeltatime));
+			float t1 = g_scrub->mTime;
+			PlaySimulationSounds(t0, t1);
 		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -264,4 +267,29 @@ SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h)
 	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 
 	return tex;
+}
+
+void PlaySimSound(int type)
+{
+	// TODO!
+	if (type == 91)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 1.mp3");
+	}
+	if (type == 92)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 2.mp3");
+	}
+	if (type == 93)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 3.mp3");
+	}
+	if (type == 100)
+	{
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 1.mp3");
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 2.mp3");
+		g_world->myAudioManager.PlaySound("assets/audio/Shot 3.mp3");
+	}
+
+	printf("Sound %d!\n", type);
 }

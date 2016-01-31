@@ -144,7 +144,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	static int demonColorTint[3][3] = {
 		{ 0xFF, 0x60, 0x60 },
 		{ 0xFF, 0x90, 0x20 },
-		{ 0x30, 0x00, 0x00 },
+		{ 0xaa, 0x60, 0x40 },
 	};
 
 	for (int sz = 0; sz < 3; sz++) {
@@ -165,7 +165,9 @@ World::World(SDL_Renderer *renderer, string filename)
 
 	mDest = { 32, 32 };
 
-	myAudioManager.PlaySound("assets/audio/TimeScrub.mp3", true);
+	int musicID = myAudioManager.PlaySound("assets/audio/TimeScrub.mp3", true);
+	myAudioManager.SetVolume(musicID, 0.6f);
+
 	mScrubSoundID = myAudioManager.PlaySound("assets/audio/Scrubbing.mp3", true);
 	myAudioManager.SetVolume(mScrubSoundID, 0);
 	

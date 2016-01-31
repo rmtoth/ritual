@@ -360,11 +360,11 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			int dx = pt.x1 - pt.x0;
 			int dy = pt.y1 - pt.y0;
 			static const int dirtable[3][3] = {
-				0, 1, 2,
-				7, 0, 3,
-				6, 5, 4,
+				5, 6, 7,
+				4, 0, 0,
+				3, 2, 1,
 			};
-			int dir = (dirtable[dx + 1][dy + 1] - 3) % 8;
+			int dir = dirtable[dx + 1][dy + 1];
 			int frame = int(unit_types[u.type].animspeed * (t - u.alive.t0)) % 4;
 			static const int frametable[4] = { 0, 8, 0, 16 };
 			d.variation = frametable[frame] + dir;
@@ -411,6 +411,39 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			stuff.push_back(d);
 			++it;
 		}
+	}
+}
+
+void PlaySimulationSounds(float t0, float t1)
+{
+	{
+		auto it = lower_bound(g_preparticles.begin(), g_preparticles.end(), t0, postparticle_finder);
+		// it->t0 > t0.
+		while (it != g_preparticles.end())
+		{
+			// it->t0 < t1 ?
+			if (it->alive.t0 >= t1)
+				break;
+			PlaySimSound(it->type);
+			++it;
+		}
+	}
+	{
+		auto it = lower_bound(g_postparticles.begin(), g_postparticles.end(), t0, postparticle_finder);
+		// it->t0 > t0.
+		while (it != g_postparticles.end())
+		{
+			// it->t0 < t1 ?
+			if (it->alive.t0 >= t1)
+				break;
+			PlaySimSound(it->type);
+			++it;
+		}
+	}
+	for (auto &u : g_units)
+	{
+		if ((u.alive.t1 >= t0) && (u.alive.t1 < t1))
+			PlaySimSound(u.type);
 	}
 }
 
