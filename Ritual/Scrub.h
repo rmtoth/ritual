@@ -2,7 +2,7 @@
 
 struct Scrub {
 
-	Scrub(SDL_Renderer *renderer);
+	Scrub(SDL_Renderer *renderer, World* world);
 	void Draw(SDL_Renderer *renderer, int selectedTower, float time);
 	bool Event(SDL_Event &event);
 
@@ -22,5 +22,6 @@ struct Scrub {
 
 	void SetSlider(float x);
 	void AdvanceTime(float x);
+	World* mWorld;
 };
 
