@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	bool quit = false;
 
 	g_world = new World(renderer, "assets/map");
-	g_scrub = new Scrub(renderer);
+	g_scrub = new Scrub(renderer, g_world);
 	//for (int i = 0; i < 5; i++)
 	g_buttons[0] = new Button(renderer, "assets/tower3.png", 100, 100 + 0 * 110, 100, 100);
 	g_buttons[1] = new Button(renderer, "assets/tower2.png", 100, 100 + 1 * 110, 100, 100);
