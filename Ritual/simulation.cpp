@@ -246,20 +246,29 @@ float GetGameOverTime()
 bool BuildTower(float t, int x, int y, int type)
 {
 	if (t < g_scrub->mSpentTime)
+	{
+		ShowErrorMessage(errNotEnoughTime);
 		return false;
+	}
 
 	// Loop over towers, don't double-build
 	for (auto &u : g_towers)
 	{
 		if ((u.x == x) && (u.y == y) && (u.alive.t1 > t))
+		{
+			ShowErrorMessage(errFutureTowerBlocking);
 			return false;
+		}
 	}
 	// Loop over units, make sure we don't stom anyone
 	for (auto &u : g_units)
 	{
 		auto pt = GetPositionTransition(u, t);
-		if ((pt.x0 == x) && (pt.y0 == y)) return false;
-		if ((pt.x1 == x) && (pt.y1 == y)) return false;
+		if (((pt.x0 == x) && (pt.y0 == y)) || ((pt.x1 == x) && (pt.y1 == y)))
+		{
+			ShowErrorMessage(errDemonBlocking);
+			return false;
+		}
 	}
 
 	// We must create tower before CreatePotentialField for it to be blocking
