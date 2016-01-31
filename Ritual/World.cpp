@@ -230,12 +230,17 @@ void World::Draw(SDL_Renderer *renderer)
 	{
 		WorldToScreen(fx, fy, float(d.x), float(d.y));
 
-		TileType *tt = mObjectTypes[d.sprite][d.variation];
+		//TileType *tt = mObjectTypes[d.sprite][d.variation];
+
+		TileType *tt;
+		if (d.sprite >= 80 && d.sprite < 90) {
+			int rot = d.variation % 8;
+			int frame = d.variation / 8;
+			tt = &demon[0][frame][rot];
+		} else
+			tt = mObjectTypes[d.sprite][d.variation];
 
 		RenderIsoSprite(renderer, *mShadow, int(fx), int(fy), mShadowW, mShadowH);
-
-
-
 		RenderIsoSprite(renderer, *tt->mTex, int(fx), int(fy), tt->mW, tt->mH);
 	}
 	
