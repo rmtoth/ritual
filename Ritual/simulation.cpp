@@ -48,6 +48,7 @@ void InitSim()
 {
 	srand(0xBABEFACE);
 
+#if 0
 	float incr[3] = { 1.25f, 1.1f, 1.3f };
 	float nUnits[3] = { 1.0f, 3.0f, 3.5f };
 
@@ -72,6 +73,10 @@ void InitSim()
 		}
 
 	}
+#endif
+
+	CreateUnit({ 1.0f, g_world->mSpawn[0].x, g_world->mSpawn[0].y }, 0);
+
 }
 
 void TruncateHealth(unit &u, float t)

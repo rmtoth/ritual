@@ -22,6 +22,8 @@ int errMsg = errNone;
 double errEndTime;
 
 SDL_Texture* errorTextures[numErrorMessages];
+SDL_Texture* helpTexture;
+SDL_Texture* deathTexture;
 
 void ShowErrorMessage(ErrorMsg e)
 {
@@ -52,6 +54,61 @@ void DrawErrorMessage(SDL_Renderer *r)
 
 }
 
+void DrawHelp(SDL_Renderer *r)
+{
+	if (g_scrub->mTime > 2.0f)
+		return;
+
+	double alpha = min(1.0, errEndTime - nowTime);
+
+	SDL_Rect rc;
+	rc.w = RES_X;
+	rc.h = RES_Y;
+	rc.x = 0;
+	rc.y = 0;
+	SDL_RenderCopy(r, helpTexture, nullptr, &rc);
+
+	SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_ADD);
+	SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
+	SDL_RenderDrawRect(r, &rc);
+
+}
+
+void DrawDeath(SDL_Renderer *r)
+{
+	float end = GetGameOverTime();
+	if (g_scrub->mSpentTime < end)
+		return;
+
+	static bool firstDeath = true;
+	if (firstDeath) {
+		g_world->myAudioManager.PlaySound("assets/audio/failed.mp3", false);
+		firstDeath = false;
+	}
+
+
+	SDL_Rect rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = RES_X;
+	rect.h = RES_Y;
+	SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_MOD);
+	SDL_SetRenderDrawColor(r, 128, 128, 128, 128);
+	SDL_RenderFillRect(r, &rect);
+
+	SDL_Rect rc;
+	SDL_QueryTexture(deathTexture, NULL, NULL, &rc.w, &rc.h);
+
+	rc.x = 800 - rc.w / 2;
+	rc.y = 450 - rc.h / 2;
+
+	SDL_RenderCopy(r, deathTexture, nullptr, &rc);
+
+	SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_ADD);
+	SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
+	SDL_RenderDrawRect(r, &rc);
+}
+
 int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -69,6 +126,8 @@ int main(int argc, char* argv[])
 	errorTextures[6] = ImgToTex(renderer, "assets/error6.png", ww, hh);
 	errorTextures[7] = ImgToTex(renderer, "assets/error7.png", ww, hh);
 	errorTextures[8] = ImgToTex(renderer, "assets/error8.png", ww, hh);
+	helpTexture = ImgToTex(renderer, "assets/help.png", ww, hh);
+	deathTexture = ImgToTex(renderer, "assets/gameover.png", ww, hh);
 
 	bool quit = false;
 
@@ -157,6 +216,12 @@ int main(int argc, char* argv[])
 
 		if (win) {
 			ShowErrorMessage(errWin);
+			static bool firstWin = true;
+			if (firstWin) {
+				g_world->myAudioManager.PlaySound("assets/audio/win.mp3", false);
+				firstWin = false;
+			}
+
 		}
 		else {
 			if (GetGameOverTime() / g_scrub->mTotalTime >= 1.0f)
@@ -164,6 +229,8 @@ int main(int argc, char* argv[])
 		}
 
 		DrawErrorMessage(renderer);
+		DrawHelp(renderer);
+		DrawDeath(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
