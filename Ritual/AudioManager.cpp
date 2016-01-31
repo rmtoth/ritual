@@ -29,11 +29,16 @@ void CAudioManager::Update()
 {
 	for (int i = 0; i < myStreams.size(); i++)
 	{
-		HSTREAM& stream = myStreams[i];
+		HSTREAM& stream = myStreams[i].mStream;
 		QWORD filePos =  BASS_StreamGetFilePosition(stream, BASS_FILEPOS_CURRENT);
 		QWORD totalPos = BASS_StreamGetFilePosition(stream, BASS_FILEPOS_END);
 		if (filePos >= totalPos)
 		{
+			if (myStreams[i].mLoop == true)
+			{
+				BASS_ChannelPlay(stream, FALSE);
+				break;
+			}
 			BASS_StreamFree(stream);
 			myStreams.erase(myStreams.begin() + i);
 			break;
@@ -42,10 +47,13 @@ void CAudioManager::Update()
 	}
 }
 
-void CAudioManager::PlaySound(std::string aPath)
+void CAudioManager::PlaySound(std::string aPath, bool loop)
 {
 	HSTREAM streamHandle; // Handle for open stream
 	streamHandle = BASS_StreamCreateFile(FALSE, aPath.c_str(), 0, 0, 0);
 	BASS_ChannelPlay(streamHandle, FALSE);
-	myStreams.push_back(streamHandle);
+	SPlayingSound sound;
+	sound.mLoop = loop;
+	sound.mStream = streamHandle;
+	myStreams.push_back(sound);
 }

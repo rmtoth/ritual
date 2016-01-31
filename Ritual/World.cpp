@@ -141,7 +141,7 @@ World::World(SDL_Renderer *renderer, string filename)
 
 	mDest = { 32, 32 };
 
-	myAudioManager.PlaySound("assets/audio/TimeScrub.mp3");
+	myAudioManager.PlaySound("assets/audio/TimeScrub.mp3", true);
 }
 
 World::~World()
@@ -196,7 +196,7 @@ void World::AddObject(SDL_Renderer *renderer, int i, string filename)
 
 void World::Draw(SDL_Renderer *renderer)
 {
-
+	myAudioManager.Update();
 	int camX = int(mCamX + 0.5f);
 	int camY = int(mCamY + 0.5f);
 
