@@ -117,8 +117,9 @@ void RecomputePath(unit &u, float t);
 static struct {
 	float speed; // larger number is slower
 	float health;
+	float animspeed;
 } unit_types[] = {
-	{ 1.0f, 100.0f },
+	{ 1.0f, 100.0f, 0.3f },
 };
 
 static struct {
