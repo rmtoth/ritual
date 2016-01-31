@@ -25,6 +25,8 @@ SDL_Texture* errorTextures[numErrorMessages];
 SDL_Texture* helpTexture;
 SDL_Texture* deathTexture;
 
+bool isDead = false;
+
 void ShowErrorMessage(ErrorMsg e)
 {
 	errMsg = e;
@@ -56,7 +58,7 @@ void DrawErrorMessage(SDL_Renderer *r)
 
 void DrawHelp(SDL_Renderer *r)
 {
-	if (g_scrub->mTime > 2.0f)
+	if (g_scrub->mTime > 0.05f)
 		return;
 
 	double alpha = min(1.0, errEndTime - nowTime);
@@ -84,6 +86,7 @@ void DrawDeath(SDL_Renderer *r)
 	if (firstDeath) {
 		g_world->myAudioManager.PlaySound("assets/audio/failed.mp3", false);
 		firstDeath = false;
+		isDead = true;
 	}
 
 
@@ -168,30 +171,34 @@ int main(int argc, char* argv[])
 				quit = 1;
 				break;
 			}
-			if (g_scrub->Event(event)) continue;
-			bool eatenByButton = false;
-			for (int i = 0; i < nButtons; i++) {
-				bool hit = g_buttons[i]->Event(event);
-				if (hit)
-					selectedButton = i;
-				eatenByButton |= hit;
-			}
-			if (eatenByButton)
-				continue;
-			if (g_playpause[0]->Event(event)) {
-				isPlaying = true;
-				continue;
-			}
-			if (g_playpause[1]->Event(event)) {
-				isPlaying = false;
-				continue;
-			}
-			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
-				isPlaying = !isPlaying;
-			}
-			if (g_scrub->Event(event)) continue;
-			if (!win) {
-				if (g_world->Event(event, selectedButton)) continue;
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+				quit = true;
+			if (!isDead) {
+				if (g_scrub->Event(event)) continue;
+				bool eatenByButton = false;
+				for (int i = 0; i < nButtons; i++) {
+					bool hit = g_buttons[i]->Event(event);
+					if (hit)
+						selectedButton = i;
+					eatenByButton |= hit;
+				}
+				if (eatenByButton)
+					continue;
+				if (g_playpause[0]->Event(event)) {
+					isPlaying = true;
+					continue;
+				}
+				if (g_playpause[1]->Event(event)) {
+					isPlaying = false;
+					continue;
+				}
+				if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+					isPlaying = !isPlaying;
+				}
+				if (g_scrub->Event(event)) continue;
+				if (!win) {
+					if (g_world->Event(event, selectedButton)) continue;
+				}
 			}
 		}
 		if (quit)
