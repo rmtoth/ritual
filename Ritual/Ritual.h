@@ -119,9 +119,9 @@ static struct {
 	float health;
 	float animspeed;
 } unit_types[] = {
-	{ 1.0f, 100.0f, 3.0f },
-	{ 2.0f, 25.0f, 5.0f },
-	{ 4.0f, 5.0f, 10.0f },
+	{ 1.0f, 100.0f, 3.0f }, // slow
+	{ 0.5f, 25.0f, 5.0f }, // med
+	{ 0.25f, 5.0f, 10.0f }, // fast
 };
 
 static struct {

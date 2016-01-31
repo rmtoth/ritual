@@ -35,7 +35,13 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 5, "assets/tile_tree3.png");
 	AddObject(renderer, 5, "assets/tile_tree4.png");
 	AddObject(renderer, 32, "assets/tile_spawn.png");
+
 	AddObject(renderer, 50, "assets/tower1.png");
+	AddObject(renderer, 51, "assets/tower2.png");
+	AddObject(renderer, 52, "assets/tower3.png");
+	AddObject(renderer, 53, "assets/tower4.png");
+
+
 	AddObject(renderer, 80, "assets/tower1.png");
 	AddObject(renderer, 10, "assets/tile_rock_big.png");
 
@@ -236,7 +242,7 @@ void World::Draw(SDL_Renderer *renderer)
 		if (d.sprite >= 80 && d.sprite < 90) {
 			int rot = d.variation % 8;
 			int frame = d.variation / 8;
-			tt = &demon[0][frame][rot];
+			tt = &demon[d.sprite - 80][frame][rot];
 		} else
 			tt = mObjectTypes[d.sprite][d.variation];
 

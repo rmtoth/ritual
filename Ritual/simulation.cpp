@@ -18,12 +18,13 @@ static bool shot_finder(const shot &s, float t)
 }
 
 // TODO: Unit types with corresponding health and speed
-void CreateUnit(position p)
+void CreateUnit(position p, int type)
 {
 	g_units.push_back({});
 	unit &u = g_units.back();
 	u.alive = span(p.t);
-	u.hp.push_back({ p.t, 100 });
+	u.type = type;
+	u.hp.push_back({ p.t, unit_types[type].health });
 	u.path.push_back(p);
 	RecomputePath(u, 0);
 }
@@ -46,17 +47,19 @@ void InitSim()
 {
 	srand(0xBABEFACE);
 
-	float incr[3] = { 1.25f, 1.4f, 1.55f };
-	float nUnits[3] = { 2.0f, 3.0f, 4.0f };
+	float incr[3] = { 1.25f, 1.1f, 1.3f };
+	float nUnits[3] = { 1.0f, 3.0f, 3.5f };
 
-	for (int wave = 0; wave < 20; wave++) {
-		float t0 = 1.0f + 0.8f * (wave / 20.0f) * g_scrub->mTotalTime;
-		float t1 = 1.0f + 0.8f * ((wave + 1) / 20.0f) * g_scrub->mTotalTime;
+	int nWaves = 10;
+
+	for (int wave = 0; wave < nWaves; wave++) {
+		float t0 = 1.0f + 0.8f * (wave / float(nWaves)) * g_scrub->mTotalTime;
+		float t1 = 1.0f + 0.8f * ((wave + 1) / float(nWaves)) * g_scrub->mTotalTime;
 		t1 = t0 + (t1 - t0) * 0.2f;
 		for (auto it : g_world->mSpawn) {
 			for (int a = 0; a < 3; a++) {
 
-				int u = int(nUnits);
+				int u = int(nUnits[a]);
 				for (int k = 0; k < u; k++) {
 					float t = t0 + (t1 - t0) * (float(rand()) / float(RAND_MAX));
 					CreateUnit({ t, it.x, it.y }, a);
@@ -68,16 +71,6 @@ void InitSim()
 		}
 
 	}
-
-
-	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
-	for (auto it : g_world->mSpawn) {
-		for (int a = 0; a < 100; a++) {
-			float t = (float(rand()) / float(RAND_MAX));
-			CreateUnit({ 0.8f * g_scrub->mTotalTime * (1 - powf(t, 1.8f)), it.x, it.y });
-		}
-	}
-	//CreateUnit({ 1, 10, 10 });
 }
 
 void TruncateHealth(unit &u, float t)
