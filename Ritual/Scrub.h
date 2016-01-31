@@ -11,6 +11,9 @@ struct Scrub {
 	SDL_Texture *mMarker;
 	int mMarkerW, mMarkerH;
 
+	SDL_Texture *mEndMarker;
+	int mEndMarkerW, mEndMarkerH;
+
 	float mSpentTime;
 	float mTime;
 	float mSlider;

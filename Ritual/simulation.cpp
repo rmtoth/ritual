@@ -148,6 +148,20 @@ float FindClosest(float t, int x, int y, int *ui)
 	return d2best;
 }
 
+void ComputeDieTime()
+{
+	g_game_over_time = inf;
+	for (auto &u : g_units)
+	{
+		float tdie = u.path.back().t;
+		if (u.alive(tdie))
+		{
+			if (tdie < g_game_over_time)
+				g_game_over_time = tdie;
+		}
+	}
+}
+
 // TODO: End condition
 void SimulateUntil(float tend)
 {
@@ -157,6 +171,7 @@ void SimulateUntil(float tend)
 	if (g_towers.empty())
 	{
 		g_simulation_time = tend;
+		ComputeDieTime();
 		return;
 	}
 
@@ -193,17 +208,7 @@ void SimulateUntil(float tend)
 		n.t += tower_types[n.tower->type].period;
 		Q.push(n);
 	}
-
-	g_game_over_time = inf;
-	for (auto &u : g_units)
-	{
-		float tdie = u.path.back().t;
-		if (u.alive(tdie))
-		{
-			if (tdie < g_game_over_time)
-				g_game_over_time = tdie;
-		}
-	}
+	ComputeDieTime();
 }
 
 float GetGameOverTime()
