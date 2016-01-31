@@ -25,6 +25,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddTile(renderer, 6, "assets/tile_grass_flat_wall.png");
 	AddTile(renderer, 7, "assets/tile_grass_flat_wall_2.png");
 	AddTile(renderer, 8, "assets/tile_grass_flat_wall_3.png");
+	AddTile(renderer, 9, "assets/tile_water.png");
 	AddTile(renderer, 32, "assets/tile_spawn.png");
 
 	AddObject(renderer, 5, "assets/tile_tree1.png");
@@ -34,6 +35,7 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 32, "assets/tile_spawn.png");
 	AddObject(renderer, 50, "assets/tower1.png");
 	AddObject(renderer, 80, "assets/tower1.png");
+	AddObject(renderer, 10, "assets/tile_rock_big.png");
 
 	u32 w, h;
 	u8 *img;
