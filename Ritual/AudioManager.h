@@ -9,10 +9,15 @@ public:
 	CAudioManager();
 	~CAudioManager();
 	int Init();
-	void PlaySound(std::string aPath);
+	void PlaySound(std::string aPath, bool loop = false);
 	void Update();
 private:
-	std::vector<HSTREAM> myStreams;
+	struct SPlayingSound
+	{
+		HSTREAM mStream;
+		bool mLoop;
+	};
+	std::vector<SPlayingSound> myStreams;
 	std::vector<HSAMPLE> myPlayingSounds;
 };
 
