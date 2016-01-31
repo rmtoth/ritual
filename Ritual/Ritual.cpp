@@ -28,9 +28,9 @@ int main(int argc, char* argv[])
 	g_world = new World(renderer, "assets/map");
 	g_scrub = new Scrub(renderer);
 	//for (int i = 0; i < 5; i++)
-	g_buttons[0] = new Button(renderer, "assets/tower1.png", 100, 100 + 0 * 110, 100, 100);
+	g_buttons[0] = new Button(renderer, "assets/tower3.png", 100, 100 + 0 * 110, 100, 100);
 	g_buttons[1] = new Button(renderer, "assets/tower2.png", 100, 100 + 1 * 110, 100, 100);
-	g_buttons[2] = new Button(renderer, "assets/tower3.png", 100, 100 + 2 * 110, 100, 100);
+	g_buttons[2] = new Button(renderer, "assets/tower1.png", 100, 100 + 2 * 110, 100, 100);
 	g_buttons[3] = new Button(renderer, "assets/tower4.png", 100, 100 + 3 * 110, 100, 100);
 
 	g_playpause[0] = new Button(renderer, "assets/play.png", RES_X - 280, RES_Y - 200, 80, 80);
