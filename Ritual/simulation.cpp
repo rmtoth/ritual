@@ -233,6 +233,17 @@ void GetDrawables(float t, vector<drawable> &stuff)
 			Interpolate(pt, d.x, d.y);
 			float hp = GetHealth(u, t);
 			d.health = hp / unit_types[u.type].health;
+			int dx = pt.x1 - pt.x0;
+			int dy = pt.y1 - pt.y0;
+			static const int dirtable[3][3] = {
+				0, 1, 2,
+				7, 0, 3,
+				6, 5, 4,
+			};
+			int dir = dirtable[dx + 1][dy + 1];
+			int frame = int(unit_types[u.type].animspeed * (t - u.alive.t0)) % 4;
+			static const int frametable[4] = { 0, 8, 0, 16 };
+			d.variation = frametable[frame] + dir;
 			stuff.push_back(d);
 		}
 	}
