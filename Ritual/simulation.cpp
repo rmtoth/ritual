@@ -30,11 +30,13 @@ static bool postparticle_finder(const particle &s, float t)
 	return s.alive.t0 < t;
 }
 
-void InterpolateParticle(const particle &p, float t, float &x, float &y)
+void InterpolateParticle(const particle &p, float t, float &x, float &y, int *idx)
 {
 	float s = (t - p.alive.t0) / (p.alive.t1 - p.alive.t0);
 	x = p.x0 + s * (p.x1 - p.x0);
 	y = p.y0 + s * (p.y1 - p.y0);
+	if (idx)
+		*idx = int(s * 5.99f);
 }
 
 // TODO: Unit types with corresponding health and speed
@@ -252,25 +254,13 @@ void SimulateUntil(float tend)
 					}
 				}
 				particle part;
-				part.alive = span(n.t, n.t + .1f);
+				part.alive = span(n.t, n.t + .3f);
 				part.x0 = x;
 				part.y0 = y;
-				part.type = 4;
+				part.type = 100;
 				part.x1 = x;
 				part.y1 = y;
 				g_postparticles.push_back(part);
-				//static const float PP[][2] = {
-				//	{ +1.0f, +0.0f },
-				//	{ -1.0f, +0.0f },
-				//	{ +0.0f, +1.0f },
-				//	{ +0.0f, -1.0f },
-				//};
-				//for (auto &P : PP)
-				//{
-				//	part.x1 = x + P[0];
-				//	part.y1 = y + P[1];
-				//	g_postparticles.push_back(part);
-				//}
 			}
 			else
 			{
@@ -282,7 +272,7 @@ void SimulateUntil(float tend)
 			part.y0 = float(n.tower->y);
 			part.x1 = x;
 			part.y1 = y;
-			part.type = ty;
+			part.type = 90 + ty;
 			g_preparticles.push_back(part);
 		}
 		n.t += tower_types[n.tower->type].period;
@@ -393,29 +383,32 @@ void GetDrawables(float t, vector<drawable> &stuff)
 		}
 	}
 	{
-		auto it = lower_bound(g_preparticles.begin(), g_preparticles.end(), t, postparticle_finder);
+		auto it = lower_bound(g_preparticles.begin(), g_preparticles.end(), t, preparticle_finder);
 		while (it != g_preparticles.end())
 		{
 			if (!it->alive(t))
 				break;
 			drawable d;
-			d.sprite = 50;
-			InterpolateParticle(*it, t, d.x, d.y);
+			InterpolateParticle(*it, t, d.x, d.y, nullptr);
+			d.sprite = it->type;
 			d.health = 0;
 			stuff.push_back(d);
+			++it;
 		}
 	}
 	{
-		auto it = lower_bound(g_postparticles.begin(), g_postparticles.end(), t, postparticle_finder);
+		auto it = lower_bound(g_postparticles.begin(), g_postparticles.end(), t, preparticle_finder);
 		while (it != g_postparticles.end())
 		{
 			if (!it->alive(t))
 				break;
 			drawable d;
-			d.sprite = 50;
-			InterpolateParticle(*it, t, d.x, d.y);
+			int idx;
+			InterpolateParticle(*it, t, d.x, d.y, &idx);
+			d.sprite = it->type + idx;
 			d.health = 0;
 			stuff.push_back(d);
+			++it;
 		}
 	}
 }
