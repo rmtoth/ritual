@@ -38,8 +38,8 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 33, "assets/tile_end.png");
 
 	AddObject(renderer, 50, "assets/tower3.png");
-	AddObject(renderer, 51, "assets/tower2.png");
-	AddObject(renderer, 52, "assets/tower1.png");
+	AddObject(renderer, 51, "assets/tower1.png");
+	AddObject(renderer, 52, "assets/tower2.png");
 	AddObject(renderer, 53, "assets/tower4.png");
 
 
