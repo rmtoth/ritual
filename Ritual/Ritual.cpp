@@ -198,7 +198,10 @@ int main(int argc, char* argv[])
 			break;
 
 		if (isPlaying) {
+			float t0 = g_scrub->mTime;
 			g_scrub->AdvanceTime(float(ddeltatime));
+			float t1 = g_scrub->mTime;
+			PlaySimulationSounds(t0, t1);
 		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -264,4 +267,10 @@ SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h)
 	SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 
 	return tex;
+}
+
+void PlaySimSound(int type)
+{
+	// TODO!
+	printf("Sound %d!\n", type);
 }

@@ -107,6 +107,8 @@ struct drawable {
 void InitSim();
 void GetDrawables(float t, vector<drawable>&);
 bool BuildTower(float t, int x, int y, int type);
+void PlaySimulationSounds(float t0, float t1);
+void PlaySimSound(int type);
 // TODO: bool SellTower(float t, int x, int y);
 // TODO: bool EraseTower(float t, int x, int y);
 float GetGameOverTime();
