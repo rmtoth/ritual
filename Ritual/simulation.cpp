@@ -46,6 +46,30 @@ void InitSim()
 {
 	srand(0xBABEFACE);
 
+	float incr[3] = { 1.25f, 1.4f, 1.55f };
+	float nUnits[3] = { 2.0f, 3.0f, 4.0f };
+
+	for (int wave = 0; wave < 20; wave++) {
+		float t0 = 1.0f + 0.8f * (wave / 20.0f) * g_scrub->mTotalTime;
+		float t1 = 1.0f + 0.8f * ((wave + 1) / 20.0f) * g_scrub->mTotalTime;
+		t1 = t0 + (t1 - t0) * 0.2f;
+		for (auto it : g_world->mSpawn) {
+			for (int a = 0; a < 3; a++) {
+
+				int u = int(nUnits);
+				for (int k = 0; k < u; k++) {
+					float t = t0 + (t1 - t0) * (float(rand()) / float(RAND_MAX));
+					CreateUnit({ t, it.x, it.y }, a);
+				}
+
+				nUnits[a] *= incr[a];
+			}
+			
+		}
+
+	}
+
+
 	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
 	for (auto it : g_world->mSpawn) {
 		for (int a = 0; a < 100; a++) {
