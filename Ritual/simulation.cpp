@@ -93,6 +93,7 @@ void InitSim()
 		}
 
 	}
+
 }
 
 void TruncateHealth(unit &u, float t)

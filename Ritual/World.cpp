@@ -46,6 +46,18 @@ World::World(SDL_Renderer *renderer, string filename)
 	AddObject(renderer, 80, "assets/tower1.png");
 	AddObject(renderer, 10, "assets/tile_rock_big.png");
 
+	AddObject(renderer, 90, "assets/shot.png");
+	AddObject(renderer, 91, "assets/shot.png");
+	AddObject(renderer, 92, "assets/shot.png");
+	AddObject(renderer, 93, "assets/shot.png");
+
+	AddObject(renderer, 100, "assets/AreaDamage/1.png");
+	AddObject(renderer, 101, "assets/AreaDamage/2.png");
+	AddObject(renderer, 102, "assets/AreaDamage/3.png");
+	AddObject(renderer, 103, "assets/AreaDamage/4.png");
+	AddObject(renderer, 104, "assets/AreaDamage/5.png");
+	AddObject(renderer, 105, "assets/AreaDamage/6.png");
+
 	u32 w, h;
 	u8 *img;
 	lodepng_decode32_file(&img, &w, &h, "assets/palette.png");
