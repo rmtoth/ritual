@@ -154,6 +154,7 @@ void SimDebugDraw(SDL_Renderer *r, float t)
 // Continue from last node to the target position.
 void FindRemainingPath(unit &u)
 {
+	float speed = unit_types[u.type].speed;
 	while (true)
 	{
 		const position &initial = u.path.back();
@@ -174,7 +175,7 @@ void FindRemainingPath(unit &u)
 			float dist = 1;
 			if ((x2 - x != 0) && (y2 - y != 0))
 				dist = 1.4f;
-			float t2 = t + g_world->mWalkCost[cell] * dist;
+			float t2 = t + 1.0f / g_world->mWalkCost[cell] * dist * speed;
 			u.path.push_back({ t2, x2, y2 });
 			x = x2;
 			y = y2;
@@ -185,12 +186,16 @@ void FindRemainingPath(unit &u)
 
 void RecomputePath(unit &u, float t)
 {
+#if 1
+	u.path.resize(1);
+#else
 	// Find first node after t
 	auto lo = lower_bound(u.path.begin(), u.path.end(), t, position_finder);
 	//auto hi = lo + 1;
 	// Remove excessive nodes, leaving spawn point alone
 	if (lo != u.path.begin())
 		u.path.resize(lo - u.path.begin());
+#endif
 	FindRemainingPath(u);
 }
 

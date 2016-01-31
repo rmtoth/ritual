@@ -114,9 +114,8 @@ void RepairPotentialField(float t);
 void RecomputePath(unit &u, float t);
 //==============
 
-// TODO: Speed! use it! navigation
 static struct {
-	float speed;
+	float speed; // larger number is slower
 	float health;
 } unit_types[] = {
 	{ 1.0f, 100.0f },
@@ -126,8 +125,9 @@ static struct {
 	float period;
 	float range2;
 	float damage;
+	float cost;
 } tower_types[] = {
-	{ 2.0f, 9.0f, 5.0f },
+	{ 2.0f, 9.0f, 5.0f, 20.0f },
 };
 
 extern vector<tower> g_towers;

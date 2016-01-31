@@ -50,7 +50,6 @@ int main(int argc, char* argv[])
 		nowTime = double(perfCnt) / double(perfFreq);
 		double ddeltatime = nowTime - lastTime;
 		ddeltatime = ddeltatime > 0.1 ? 0.1 : ddeltatime;
-		//printf("%f\n", ddeltatime);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -80,7 +79,7 @@ int main(int argc, char* argv[])
 				isPlaying = !isPlaying;
 			}
 			if (g_scrub->Event(event)) continue;
-			if (g_world->Event(event)) continue;
+			if (g_world->Event(event, selectedButton)) continue;
 		}
 		if (quit)
 			break;
@@ -95,7 +94,7 @@ int main(int argc, char* argv[])
 		g_world->Draw(renderer);
 		if (!g_scrub->mClaimedMouse)
 			g_world->DrawMarker(renderer);
-		g_scrub->Draw(renderer);
+		g_scrub->Draw(renderer, selectedButton, float(nowTime));
 		for (int i = 0; i < nButtons; i++)
 			g_buttons[i]->Draw(renderer, i == selectedButton);
 		g_playpause[0]->Draw(renderer, isPlaying);
