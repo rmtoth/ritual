@@ -440,5 +440,10 @@ void PlaySimulationSounds(float t0, float t1)
 			++it;
 		}
 	}
+	for (auto &u : g_units)
+	{
+		if ((u.alive.t1 >= t0) && (u.alive.t1 < t1))
+			PlaySimSound(u.type);
+	}
 }
 
