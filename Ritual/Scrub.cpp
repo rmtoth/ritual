@@ -1,8 +1,10 @@
 #include "Ritual.h"
 #include "Scrub.h"
+#include "World.h"
 
-Scrub::Scrub(SDL_Renderer *renderer)
+Scrub::Scrub(SDL_Renderer *renderer, World* world)
 {
+	mWorld = world;
 	mMarker = ImgToTex(renderer, "assets/marker.png", mMarkerW, mMarkerH);
 	mTime = 0.0f;
 	mSlider = 0.0f;
@@ -75,10 +77,19 @@ bool Scrub::Event(SDL_Event &event)
 		event.button.x <= mRect.x + mRect.w && event.button.y <= mRect.y + mRect.h)
 	{
 		mClaimedMouse = true;
-	} else if (event.type == SDL_MOUSEBUTTONUP)
+	}
+	else if (event.type == SDL_MOUSEBUTTONUP)
+	{
 		mClaimedMouse = false;
+		mWorld->myAudioManager.SetVolume(mWorld->mScrubSoundID, 0);
+	}
+
 	else if (mClaimedMouse && event.type == SDL_MOUSEMOTION) {
 		SetSlider(float(event.motion.x - mRect.x) / float(mRect.w));
+
+
+		mWorld->myAudioManager.SetVolume(mWorld->mScrubSoundID, 0.5f);
+
 	}
 
 	return mClaimedMouse;

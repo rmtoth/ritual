@@ -5,6 +5,7 @@
 
 CAudioManager::CAudioManager()
 {
+	myID = 0;
 }
 
 
@@ -27,27 +28,39 @@ int CAudioManager::Init()
 
 void CAudioManager::Update()
 {
-	for (int i = 0; i < myStreams.size(); i++)
+	for (auto iterator = myStreams.begin(); iterator != myStreams.end(); )
 	{
-		HSTREAM& stream = myStreams[i].mStream;
+		HSTREAM& stream = iterator->second.mStream;
 		QWORD filePos =  BASS_StreamGetFilePosition(stream, BASS_FILEPOS_CURRENT);
 		QWORD totalPos = BASS_StreamGetFilePosition(stream, BASS_FILEPOS_END);
 		if (filePos >= totalPos)
 		{
-			if (myStreams[i].mLoop == true)
+			if (iterator->second.mLoop == true)
 			{
 				BASS_ChannelPlay(stream, FALSE);
 				break;
 			}
 			BASS_StreamFree(stream);
-			myStreams.erase(myStreams.begin() + i);
-			break;
+			myStreams.erase(stream);
 		}
-	//	stram.
+		else
+		{
+			iterator++;
+		}
 	}
 }
 
-void CAudioManager::PlaySound(std::string aPath, bool loop)
+void CAudioManager::SetVolume(int aID, float aVolume)
+{
+	std::map<int, SPlayingSound>::iterator it = myStreams.find(aID);
+	if (it != myStreams.end())
+	{
+		SPlayingSound& sound = it->second;
+		BASS_ChannelSetAttribute(sound.mStream, BASS_ATTRIB_VOL, aVolume);
+	}
+}
+
+int CAudioManager::PlaySound(std::string aPath, bool loop)
 {
 	HSTREAM streamHandle; // Handle for open stream
 	streamHandle = BASS_StreamCreateFile(FALSE, aPath.c_str(), 0, 0, 0);
@@ -55,5 +68,8 @@ void CAudioManager::PlaySound(std::string aPath, bool loop)
 	SPlayingSound sound;
 	sound.mLoop = loop;
 	sound.mStream = streamHandle;
-	myStreams.push_back(sound);
+	int id = myID;
+	myStreams[id] = sound;
+	myID++;
+	return id;
 }

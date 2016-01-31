@@ -154,6 +154,9 @@ World::World(SDL_Renderer *renderer, string filename)
 	mDest = { 32, 32 };
 
 	myAudioManager.PlaySound("assets/audio/TimeScrub.mp3", true);
+	mScrubSoundID = myAudioManager.PlaySound("assets/audio/Scrubbing.mp3", true);
+	myAudioManager.SetVolume(mScrubSoundID, 0);
+	
 }
 
 World::~World()
