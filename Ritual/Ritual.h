@@ -141,5 +141,17 @@ extern vector<unit> g_units;
 extern struct World *g_world;
 extern struct Scrub *g_scrub;
 
+enum ErrorMsg {
+	errNone,
+	errNotEnoughTime,
+	errDemonBlocking,
+	errFutureTowerBlocking,
+	errIsolateSpawnNow,
+	errIsolateSpawnFuture,
+	errIsolateUnitNow,
+	errIsolateUnitFuture,
+	numErrorMessages
+};
+void ShowErrorMessage(ErrorMsg);
 SDL_Texture *ImgToTex(SDL_Renderer *renderer, string filename, int &w, int &h);
 
