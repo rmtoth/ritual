@@ -1,12 +1,11 @@
 #include "Ritual.h"
 #include "World.h"
 #include "Scrub.h"
+#include <random>
 
 vector<tower> g_towers;
 vector<unit> g_units;
 float g_simulation_time = 0; // Kinda inclusive/exclusive, be cautious
-
-
 
 static bool health_finder(const health &h, float t)
 {
@@ -45,9 +44,14 @@ void SpawnTimeInterval(float t0, float t1)
 // TODO: Remove test unit
 void InitSim()
 {
+	srand(0xBABEFACE);
+
 	//for (size_t i = 0; i < g_world->mSpawn.size(); i++) {
 	for (auto it : g_world->mSpawn) {
-		CreateUnit({ 1, it.x, it.y });
+		for (int a = 0; a < 100; a++) {
+			float t = (float(rand()) / float(RAND_MAX));
+			CreateUnit({ 0.8f * g_scrub->mTotalTime * (1 - powf(t, 1.8f)), it.x, it.y });
+		}
 	}
 	//CreateUnit({ 1, 10, 10 });
 }
